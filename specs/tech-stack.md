@@ -26,6 +26,41 @@
 | Data fetching      | TanStack Query (React Query) | Server state management; handles caching and invalidation        |
 | HTTP client        | Axios or fetch          | Thin wrapper over FastAPI REST endpoints                              |
 
+## AI / Generative Features
+
+| Concern              | Choice                        | Notes                                                                                      |
+|----------------------|-------------------------------|--------------------------------------------------------------------------------------------|
+| AI provider          | Configurable                  | Supports Anthropic Claude, OpenAI, and Ollama (local); selected and keyed at setup via env |
+| Anthropic SDK        | `anthropic` (Python)          | Used when provider is Claude                                                               |
+| OpenAI SDK           | `openai` (Python)             | Used when provider is OpenAI; also used for Ollama (OpenAI-compatible API)                 |
+| Interaction pattern  | Tool use / function calling   | AI calls structured tools to query the DB; never receives a raw DB dump                    |
+| Write access         | Propose + confirm             | AI proposes data changes; user sees a diff and approves before any write is committed      |
+| Conversation history | SQLite (optional)             | Chat history stored in a `conversations` table; user can enable/disable in settings        |
+| AI features          | Chat assistant, anomaly/trend alerts, monthly narrative report, smart CSV import assistance | |
+
+### AI Tool Surface
+
+The assistant is given a set of callable tools backed by the existing API layer:
+
+- `get_net_worth(month)` — assets, liabilities, net worth for a month
+- `get_accounts(filters)` — list accounts with optional tag/status filters
+- `get_balances(month, account_id?)` — balance data for a month
+- `get_trends(months)` — net worth and balance history over a range of months
+- `propose_balance_update(account_id, month, amount)` — returns a diff for user confirmation
+- `propose_account_update(account_id, fields)` — returns a diff for user confirmation
+
+### AI Provider Configuration
+
+Configured via environment variables:
+
+```
+AI_PROVIDER=claude          # claude | openai | ollama
+AI_MODEL=claude-opus-4-6    # model name, provider-specific
+AI_API_KEY=sk-...           # not required for ollama
+AI_BASE_URL=                # override for ollama or proxies
+AI_HISTORY_ENABLED=true     # persist conversation history
+```
+
 ## Infrastructure
 
 | Concern            | Choice                  | Notes                                                                 |
@@ -57,6 +92,7 @@ nwtracker/
       models/             # SQLModel table definitions
       routers/            # FastAPI routers, one per domain
       services/           # Business logic (balance roll-forward, reports, etc.)
+      ai/                 # AI assistant: provider client, tool definitions, conversation service
       db.py               # DB engine and session dependency
   frontend/
     Dockerfile

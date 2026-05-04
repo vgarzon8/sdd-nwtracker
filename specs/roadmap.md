@@ -159,3 +159,74 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 - Export: button to download all tables as CSV (or zip)
 - Import: file upload form; shows validation errors and import summary
+
+---
+
+## Phase 15 — AI Foundation
+
+**Deliverable:** Configurable AI provider wired into the backend; tool framework in place; no UI yet.
+
+- Add `anthropic` and `openai` Python SDK dependencies
+- Implement provider abstraction layer in `app/ai/`: selects Claude, OpenAI, or Ollama based on `AI_PROVIDER` env var
+- Define and register the core tool set (read-only tools first): `get_net_worth`, `get_accounts`, `get_balances`, `get_trends`
+- Add `conversations` table to DB (session id, role, content, timestamp); enabled by `AI_HISTORY_ENABLED` env var
+- `POST /ai/chat` endpoint: accepts a message, runs tool-use loop, returns assistant reply + any tool calls made
+- Integration tests using a stubbed provider (no real API calls in CI)
+
+---
+
+## Phase 16 — AI Write Tools & Confirmation Flow
+
+**Deliverable:** Assistant can propose data changes; backend returns structured diffs for user confirmation.
+
+- Add write tools: `propose_balance_update`, `propose_account_update`
+- Write tools do **not** commit; they return a structured `Proposal` object (what would change)
+- Add `POST /ai/confirm` endpoint: accepts a proposal id and applies the change after user approval
+- Proposals are short-lived (in-memory or TTL'd in DB); never auto-applied
+- Integration tests for the full propose → confirm → verify cycle
+
+---
+
+## Phase 17 — Chat Assistant UI
+
+**Deliverable:** Persistent chat panel in the frontend; user can converse with the assistant.
+
+- Sidebar or slide-over drawer: always accessible, collapsible
+- Message thread: user messages, assistant replies, tool-call summaries (e.g., "I looked up your March balances")
+- Input box with submit; streaming responses if the provider supports it
+- Proposal cards: when assistant proposes a change, show a diff card with Approve / Reject buttons
+- Conversation history toggle in settings (calls `AI_HISTORY_ENABLED` config)
+
+---
+
+## Phase 18 — Anomaly & Trend Alerts
+
+**Deliverable:** AI scans each month's balances and surfaces notable changes.
+
+- Backend job / endpoint `POST /ai/analyze-month?month=YYYY-MM`: runs after balance entry is complete
+- Detects: large balance swings (configurable threshold), net worth direction changes, accounts with no update
+- Returns structured alerts with plain-language descriptions
+- Alerts displayed in the balance entry UI and/or a dedicated Alerts panel
+- User can dismiss individual alerts; dismissed state stored in DB
+
+---
+
+## Phase 19 — Monthly Narrative Report
+
+**Deliverable:** AI generates a written summary of the month's financial picture.
+
+- `POST /ai/narrative?month=YYYY-MM`: assembles month data, calls AI, returns markdown narrative
+- Narrative covers: net worth vs prior month, biggest movers, notable trends, any active alerts
+- Displayed on the Reports page alongside the numerical summary
+- Narrative is cached in DB per month (regenerable on demand)
+
+---
+
+## Phase 20 — Smart CSV Import Assistance
+
+**Deliverable:** AI helps the user map and clean CSV data during import.
+
+- During import, if column headers or values are ambiguous, the backend calls AI to suggest mappings
+- AI returns a proposed mapping (e.g., "column 'bal' → `amount`") with confidence; user can accept or override
+- Validation errors are explained in plain language ("Row 12 has a non-numeric amount: 'n/a'")
+- UI shows the AI-suggested mapping as an editable table before the import is committed

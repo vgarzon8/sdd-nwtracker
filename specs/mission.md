@@ -23,11 +23,14 @@ A single user managing their own finances locally — no accounts, no logins, no
 - Report assets, liabilities, and net worth for any given month
 - Import legacy data from CSV files
 - Export all data to CSV for backup or migration
+- Converse with a natural language AI assistant to query data, get insights, and enter balances
+- Receive AI-generated monthly narrative summaries and anomaly alerts
+- Get AI assistance when mapping and cleaning CSV data during import
 
 ## What It Does Not Do
 
 - No multi-user support
-- No cloud sync or network connectivity
+- No cloud sync or network connectivity (except outbound AI API calls, which are opt-in and configurable)
 - No real-time market data or automatic exchange rate fetching
 - No sub-monthly granularity
 - No budgeting, forecasting, or transaction-level tracking
