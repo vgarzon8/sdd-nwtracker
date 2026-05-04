@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+dist/
+.env
+
+# uv
+.uv/
+
+# SQLite
+*.db
+*.sqlite3
+
+# Node / frontend
+node_modules/
+dist/
+.next/
+
+# OS
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Docker
+.docker/
