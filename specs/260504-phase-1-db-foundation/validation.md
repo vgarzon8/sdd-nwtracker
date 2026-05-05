@@ -18,10 +18,11 @@ Phase 1 is complete and ready to merge when **all** of the following pass.
 
 ## 2. DB Init Script
 
-- [ ] `uv run db-init` runs without error on a clean environment
-- [ ] After running, `backend/nwtracker.db` exists and contains all expected tables:
+- [ ] `just db-init` runs without error on a clean environment
+- [ ] After running, `data/sqlite/nwtracker.db` exists at the repo root and contains all expected tables:
   - `currency`, `tag`, `institution`, `account`, `accounttag`, `balance`, `exchangerate`
-- [ ] Re-running `uv run db-init` on an existing DB does not raise an error (idempotent via `checkfirst=True` or equivalent)
+- [ ] `data/` is gitignored — the database file is never committed
+- [ ] Re-running `just db-init` on an existing DB does not raise an error (idempotent via `checkfirst=True` or equivalent)
 
 ## 3. Seed Script
 

@@ -32,3 +32,6 @@ logs/
 
 # temporary files
 /scratch
+
+# data directory (SQLite DB and other local data files)
+/data

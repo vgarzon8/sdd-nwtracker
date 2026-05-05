@@ -80,7 +80,7 @@ Composite unique constraint: `(currency_code, month)`.
 - **Exchange rate precision:** `Numeric(10, 4)` — 4 decimal places. Represents foreign currency units per 1 USD (e.g., `7.1000` CNY/USD). No float arithmetic.
 - **Month format:** `YYYY-MM` string in all tables and throughout the system.
 - **Schema creation:** `SQLModel.metadata.create_all()` — no migration tooling in Phase 1.
-- **DB path:** Configurable via `DATABASE_URL` env var (loaded from `.env`). Defaults to `backend/nwtracker.db`.
+- **DB path:** Configurable via `DATABASE_URL` env var (loaded from `.env`). Default: `data/sqlite/nwtracker.db` relative to the repo root (i.e., `sqlite:///./data/sqlite/nwtracker.db`). The `data/` directory is gitignored.
 - **`.env` handling:** `backend/.env` is gitignored and never committed. `backend/.env.sample` is committed and documents all required variables with placeholder values.
 
 ---
