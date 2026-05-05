@@ -24,12 +24,12 @@ Phase 1 is complete and ready to merge when **all** of the following pass.
 
 - [ ] `uv run db-seed` runs without error after `db-init`
 - [ ] After seeding, querying the DB returns:
-  - 3 currencies (USD, CNY, EUR)
-  - 3 tags
-  - 3 institutions
-  - 4 accounts with correct side, status, and currency
+  - 3 currencies (USD, CNY, CHF)
+  - 4 tags (retirement, brokerage, checking, savings)
+  - 4 institutions
+  - 5 accounts with correct side, status, and currency
   - At least 1 account–tag association per tagged account
-  - Balances for 2 months for all 4 accounts (8 rows total)
+  - Balances for 2 months for all 5 accounts (10 rows total)
   - 4 exchange rate rows (2 currencies × 2 months)
 - [ ] Re-running `uv run db-seed` does not duplicate rows (insert-or-ignore / upsert)
 

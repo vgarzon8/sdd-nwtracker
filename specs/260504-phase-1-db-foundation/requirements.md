@@ -99,16 +99,17 @@ Composite unique constraint: `(currency_code, month)`.
 
 Enough data to exercise every table and relationship:
 
-- **Currencies:** USD, CNY, EUR
-- **Tags:** retirement, brokerage, emergency-fund
-- **Institutions:** Chase, Fidelity, ICBC
+- **Currencies:** USD, CNY, CHF
+- **Tags:** retirement, brokerage, checking, savings
+- **Institutions:** Chase, Fidelity, ICBC, UBS
 - **Accounts:**
-  - Chase Checking (USD, asset, active) — tagged: emergency-fund
+  - Chase Checking (USD, asset, active) — tagged: checking
+  - Chase Savings (USD, asset, active) — tagged: savings
   - Fidelity 401k (USD, asset, active) — tagged: retirement, brokerage
-  - ICBC Savings (CNY, asset, active)
+  - ICBC Savings (CNY, asset, active) — tagged: savings
   - Chase Credit Card (USD, liability, active)
 - **Balances** (two months: 2026-03, 2026-04):
   - Representative amounts for each account in each month
 - **Exchange Rates:**
   - CNY: 7.1000 for 2026-03, 7.2000 for 2026-04
-  - EUR: 0.9200 for 2026-03, 0.9150 for 2026-04
+  - CHF: 0.8900 for 2026-03, 0.8850 for 2026-04
