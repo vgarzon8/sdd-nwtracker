@@ -9,12 +9,22 @@ dependencies = [
     "sqlmodel>=0.0.38",
 ]
 
+[project.scripts]
+db-init = "scripts.db_init:main"
+db-seed = "scripts.db_seed:main"
+
 [dependency-groups]
 dev = [
     "mypy>=1.20.2",
     "pytest>=9.0.3",
     "ruff>=0.15.12",
 ]
+
+[tool.uv]
+package = true
+
+[tool.setuptools.packages.find]
+include = ["app*", "scripts*"]
 
 [tool.ruff]
 line-length = 88
