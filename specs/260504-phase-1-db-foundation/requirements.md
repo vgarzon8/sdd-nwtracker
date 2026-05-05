@@ -88,10 +88,14 @@ Composite unique constraint: `(currency_code, month)`.
 
 - `uv init` under `backend/` — creates `pyproject.toml`, `.python-version`, and `.venv`
 - Required dependencies: `sqlmodel`, `python-dotenv`
-- Dev dependencies: `pytest`
-- Entry points:
-  - `uv run db-init` — creates all tables
-  - `uv run db-seed` — inserts seed fixtures (idempotent)
+- Dev dependencies: `pytest`, `ruff`, `mypy`
+- Entry points (invoked via `just`):
+  - `just db-init` → `uv run db-init` — creates all tables
+  - `just db-seed` → `uv run db-seed` — inserts seed fixtures (idempotent)
+  - `just test` → `uv run pytest`
+  - `just lint` → `uv run ruff check` + `uv run ruff format --check`
+  - `just typecheck` → `uv run mypy app`
+- `ruff` and `mypy` configured in `pyproject.toml` (`[tool.ruff]`, `[tool.mypy]`)
 
 ---
 
