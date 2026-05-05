@@ -96,8 +96,10 @@ Composite unique constraint: `(currency_code, month)`.
   - `just test` → `uv run pytest`
   - `just lint` → `uv run ruff check` + `uv run ruff format --check`
   - `just typecheck` → `uv run mypy app`
-- `ruff` and `mypy` configured in `pyproject.toml` (`[tool.ruff]`, `[tool.mypy]`)
+- `ruff` and `mypy` configured in `pyproject.toml` (`[tool.ruff]`, `[tool.mypy]`); mypy uses `pydantic.mypy` plugin (SQLModel has no dedicated mypy plugin)
+- `[tool.uv] package = true` required to install `[project.scripts]` entry points; `[tool.setuptools.packages.find]` scoped to `app*` and `scripts*` to prevent stray directories being picked up as packages
 - `backend/.env.sample` committed with all required variables; `backend/.env` gitignored
+- `app/config.py` loads `.env` relative to its own file path (`Path(__file__).parent.parent / ".env"`) rather than CWD, so entry points invoked from any directory resolve the correct env file
 
 ---
 

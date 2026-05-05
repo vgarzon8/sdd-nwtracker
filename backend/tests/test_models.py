@@ -282,8 +282,22 @@ def test_exchange_rate_roundtrip(session: Session) -> None:
 
     result = session.exec(select(ExchangeRate)).first()
     assert result is not None
-    assert result.rate == Decimal("7.1")  # equality ignores trailing zeros
+    assert result.rate == Decimal("7.1000")
     assert result.currency_code == "CNY"
+
+
+def test_exchange_rate_precision_0915(session: Session) -> None:
+    session.add(Currency(code="CHF", name="Swiss Franc"))
+    session.commit()
+
+    session.add(
+        ExchangeRate(currency_code="CHF", month="2026-03", rate=Decimal("0.9150"))
+    )
+    session.commit()
+
+    result = session.exec(select(ExchangeRate)).first()
+    assert result is not None
+    assert result.rate == Decimal("0.9150")
 
 
 def test_exchange_rate_composite_unique_raises(session: Session) -> None:

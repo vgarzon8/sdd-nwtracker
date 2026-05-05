@@ -10,8 +10,8 @@ test:
     uv run --project {{backend}} pytest
 
 lint:
-    uv run --project {{backend}} ruff check app
-    uv run --project {{backend}} ruff format --check app
+    uv run --project {{backend}} ruff check {{backend}}/app {{backend}}/scripts {{backend}}/tests
+    uv run --project {{backend}} ruff format --check {{backend}}/app {{backend}}/scripts {{backend}}/tests
 
 typecheck:
-    uv run --project {{backend}} mypy app
+    uv run --project {{backend}} mypy {{backend}}/app {{backend}}/scripts {{backend}}/tests
