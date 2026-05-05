@@ -8,7 +8,7 @@
 4. Configure `ruff` in `pyproject.toml` (`[tool.ruff]`): enable `E`, `F`, `I` rule sets; set `line-length = 88`
 5. Configure `mypy` in `pyproject.toml` (`[tool.mypy]`): `strict = true`, `plugins = ["sqlmodel.main"]` if available
 6. Create `justfile` at repo root with recipes: `db-init`, `db-seed`, `test`, `lint`, `typecheck`
-7. Create `backend/.env` (gitignored) with `DATABASE_URL=sqlite:///./nwtracker.db`
+7. Create `backend/.env.sample` (committed) with all required variables and placeholder values; copy to `backend/.env` locally (gitignored)
 8. Create `backend/app/__init__.py` (empty)
 9. Create `backend/app/config.py` — loads `DATABASE_URL` from `.env` via `python-dotenv`
 

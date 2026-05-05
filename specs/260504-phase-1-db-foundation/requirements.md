@@ -81,6 +81,7 @@ Composite unique constraint: `(currency_code, month)`.
 - **Month format:** `YYYY-MM` string in all tables and throughout the system.
 - **Schema creation:** `SQLModel.metadata.create_all()` — no migration tooling in Phase 1.
 - **DB path:** Configurable via `DATABASE_URL` env var (loaded from `.env`). Defaults to `backend/nwtracker.db`.
+- **`.env` handling:** `backend/.env` is gitignored and never committed. `backend/.env.sample` is committed and documents all required variables with placeholder values.
 
 ---
 
@@ -96,6 +97,7 @@ Composite unique constraint: `(currency_code, month)`.
   - `just lint` → `uv run ruff check` + `uv run ruff format --check`
   - `just typecheck` → `uv run mypy app`
 - `ruff` and `mypy` configured in `pyproject.toml` (`[tool.ruff]`, `[tool.mypy]`)
+- `backend/.env.sample` committed with all required variables; `backend/.env` gitignored
 
 ---
 

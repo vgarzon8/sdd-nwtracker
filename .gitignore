@@ -5,6 +5,8 @@ __pycache__/
 .venv/
 dist/
 .env
+.env.*
+!.env.sample
 
 # uv
 .uv/
