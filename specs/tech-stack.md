@@ -66,6 +66,8 @@ AI_HISTORY_ENABLED=true     # persist conversation history
 | Concern          | Choice | Notes                                                                                  |
 |------------------|--------|----------------------------------------------------------------------------------------|
 | Command runner   | just   | `justfile` at repo root; single entry point for common dev tasks (init, seed, test, dev server) |
+| Linter/formatter | ruff   | Replaces flake8 + black; configured in `pyproject.toml`                                |
+| Type checker     | mypy   | Static type checking for Python; configured in `pyproject.toml`                        |
 
 ## Infrastructure
 
