@@ -61,6 +61,12 @@ AI_BASE_URL=                # override for ollama or proxies
 AI_HISTORY_ENABLED=true     # persist conversation history
 ```
 
+## Developer Tools
+
+| Concern          | Choice | Notes                                                                                  |
+|------------------|--------|----------------------------------------------------------------------------------------|
+| Command runner   | just   | `justfile` at repo root; single entry point for common dev tasks (init, seed, test, dev server) |
+
 ## Infrastructure
 
 | Concern            | Choice                  | Notes                                                                 |
@@ -83,6 +89,7 @@ AI_HISTORY_ENABLED=true     # persist conversation history
 ```
 nwtracker/
   compose.yml             # runs backend + frontend together
+  justfile                # common dev tasks (db-init, db-seed, test, dev, etc.)
   backend/
     Dockerfile
     pyproject.toml        # uv-managed Python project
