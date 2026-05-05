@@ -13,7 +13,8 @@ Phase 1 is complete and ready to merge when **all** of the following pass.
 - [ ] `pytest`, `ruff`, and `mypy` appear in dev dependencies
 - [ ] `[tool.ruff]` and `[tool.mypy]` sections present in `pyproject.toml`
 - [ ] `justfile` exists at repo root with recipes: `db-init`, `db-seed`, `test`, `lint`, `typecheck`
-- [ ] `backend/.env` exists locally (gitignored; not committed)
+- [ ] `backend/.env.sample` is committed and lists all required variables
+- [ ] `backend/.env` is gitignored and absent from the repository
 
 ## 2. DB Init Script
 

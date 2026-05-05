@@ -84,7 +84,7 @@ AI_HISTORY_ENABLED=true     # persist conversation history
 - **Amounts as integers:** Balance amounts are stored as whole currency units (e.g., whole USD). No floating-point arithmetic for balances.
 - **Month format:** `YYYY-MM` strings throughout (stored in DB, used in API, displayed in UI).
 - **API style:** RESTful JSON API. Frontend and backend are separate processes in development; served from the same origin in production.
-- **No build-time secrets:** All configuration via environment variables or `.env` files.
+- **No build-time secrets:** All configuration via environment variables or `.env` files. `.env` files are gitignored; each service includes a `.env.sample` documenting all required variables.
 
 ## Project Layout (target)
 
@@ -95,7 +95,8 @@ nwtracker/
   backend/
     Dockerfile
     pyproject.toml        # uv-managed Python project
-    .env                  # local config (gitignored)
+    .env                  # local config (gitignored; never committed)
+    .env.sample           # template with all required variables (committed)
     app/
       main.py             # FastAPI app entry point
       config.py           # env var loading
