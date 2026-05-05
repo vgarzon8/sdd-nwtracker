@@ -75,7 +75,7 @@ AI_HISTORY_ENABLED=true     # persist conversation history
 |--------------------|-------------------------|-----------------------------------------------------------------------|
 | Containerization   | Docker                  | Separate `Dockerfile` for backend and frontend                        |
 | Orchestration      | Docker Compose          | `compose.yml` at repo root runs the full stack locally                |
-| DB persistence     | Named volume            | SQLite file mounted as a Docker volume so data survives container restarts |
+| DB persistence     | Named volume            | `data/` at repo root mounted as a Docker volume; SQLite file at `data/sqlite/nwtracker.db` |
 
 ## Key Conventions
 
@@ -92,6 +92,9 @@ AI_HISTORY_ENABLED=true     # persist conversation history
 nwtracker/
   compose.yml             # runs backend + frontend together
   justfile                # common dev tasks (db-init, db-seed, test, dev, etc.)
+  data/                   # gitignored; all local data files
+    sqlite/
+      nwtracker.db        # SQLite database (default location)
   backend/
     Dockerfile
     pyproject.toml        # uv-managed Python project
