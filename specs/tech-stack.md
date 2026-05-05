@@ -71,7 +71,8 @@ AI_HISTORY_ENABLED=true     # persist conversation history
 
 ## Key Conventions
 
-- **Base currency:** USD. All exchange rates are expressed as `1 USD = X units of foreign currency`.
+- **Base currency:** USD. All exchange rates are expressed as `1 USD = X units of foreign currency` (e.g., 7.1 CNY per USD is stored as `7.1000`).
+- **Exchange rate precision:** Stored as a fixed-point decimal with 4 decimal places (`Numeric(10, 4)` in SQLAlchemy). No floating-point arithmetic for rates.
 - **Amounts as integers:** Balance amounts are stored as whole currency units (e.g., whole USD). No floating-point arithmetic for balances.
 - **Month format:** `YYYY-MM` strings throughout (stored in DB, used in API, displayed in UI).
 - **API style:** RESTful JSON API. Frontend and backend are separate processes in development; served from the same origin in production.
