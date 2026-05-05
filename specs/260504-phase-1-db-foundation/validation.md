@@ -10,7 +10,9 @@ Phase 1 is complete and ready to merge when **all** of the following pass.
 
 - [ ] `backend/pyproject.toml` exists and is valid (`uv sync` succeeds with no errors)
 - [ ] `sqlmodel` and `python-dotenv` appear in runtime dependencies
-- [ ] `pytest` appears in dev dependencies
+- [ ] `pytest`, `ruff`, and `mypy` appear in dev dependencies
+- [ ] `[tool.ruff]` and `[tool.mypy]` sections present in `pyproject.toml`
+- [ ] `justfile` exists at repo root with recipes: `db-init`, `db-seed`, `test`, `lint`, `typecheck`
 - [ ] `backend/.env` exists locally (gitignored; not committed)
 
 ## 2. DB Init Script
@@ -51,12 +53,13 @@ Verified via pytest tests:
 
 ## 6. Test Suite
 
-- [ ] `uv run pytest` exits 0 with all tests passing
+- [ ] `just test` exits 0 with all tests passing
 - [ ] Tests use an in-memory SQLite DB — no file created, no cleanup needed
 - [ ] No test depends on seed data or the dev `.env`
 
 ## 7. Code Quality
 
-- [ ] No unused imports
+- [ ] `just lint` passes with no errors (`ruff check` and `ruff format --check`)
+- [ ] `just typecheck` passes with no mypy errors
 - [ ] All models importable from `app.models` without circular imports
 - [ ] `app/db.py` `get_session()` is a generator suitable for FastAPI `Depends()` (even though FastAPI is not wired up yet)
