@@ -10,20 +10,20 @@ Phase 3 is complete and ready to merge when **all** of the following pass.
 
 - [x] `backend/app/routers/currencies.py`, `tags.py`, and `institutions.py` exist
 - [x] All three routers are registered in `app/main.py` with no prefix
-- [ ] `GET /openapi.json` includes all endpoints from this phase with correct tags (`currencies`, `tags`, `institutions`)
+- [x] `GET /openapi.json` includes all endpoints from this phase with correct tags (`currencies`, `tags`, `institutions`)
 
 ---
 
 ## 2. Currency Endpoints
 
-- [ ] `GET /currencies` returns `200` with a list of currency objects
-- [ ] `POST /currencies` with `{"code": "EUR", "name": "Euro"}` returns `201` with the created object
-- [ ] `POST /currencies` with a duplicate code returns `409`
-- [ ] `GET /currencies/{code}` returns `200` for an existing currency
-- [ ] `GET /currencies/{code}` returns `404` for an unknown code
-- [ ] `DELETE /currencies/{code}` returns `204` when no accounts or exchange rates reference it
-- [ ] `DELETE /currencies/{code}` returns `409` when at least one account references the currency
-- [ ] `DELETE /currencies/{code}` returns `404` for an unknown code
+- [x] `GET /currencies` returns `200` with a list of currency objects
+- [x] `POST /currencies` with `{"code": "EUR", "name": "Euro"}` returns `201` with the created object
+- [x] `POST /currencies` with a duplicate code returns `409`
+- [x] `GET /currencies/{code}` returns `200` for an existing currency
+- [x] `GET /currencies/{code}` returns `404` for an unknown code
+- [x] `DELETE /currencies/{code}` returns `204` when no accounts or exchange rates reference it
+- [x] `DELETE /currencies/{code}` returns `409` when at least one account references the currency
+- [x] `DELETE /currencies/{code}` returns `404` for an unknown code
 
 ---
 
