@@ -46,28 +46,28 @@ Phase 3 is complete and ready to merge when **all** of the following pass.
 
 ## 4. Institution Endpoints
 
-- [ ] `GET /institutions` returns `200` with a list of institution objects
-- [ ] `POST /institutions` returns `201` with `id` and `name`
-- [ ] `POST /institutions` with a duplicate name returns `409`
-- [ ] `GET /institutions/{id}` returns `200` for an existing institution
-- [ ] `GET /institutions/{id}` returns `404` for an unknown id
-- [ ] `PUT /institutions/{id}` with a new name returns `200` with updated name
-- [ ] `PUT /institutions/{id}` with a colliding name returns `409`
-- [ ] `PUT /institutions/{id}` for an unknown id returns `404`
+- [x] `GET /institutions` returns `200` with a list of institution objects
+- [x] `POST /institutions` returns `201` with `id` and `name`
+- [x] `POST /institutions` with a duplicate name returns `409`
+- [x] `GET /institutions/{id}` returns `200` for an existing institution
+- [x] `GET /institutions/{id}` returns `404` for an unknown id
+- [x] `PUT /institutions/{id}` with a new name returns `200` with updated name
+- [x] `PUT /institutions/{id}` with a colliding name returns `409`
+- [x] `PUT /institutions/{id}` for an unknown id returns `404`
 
 **Dry-run delete (no `confirm` param):**
-- [ ] `DELETE /institutions/{id}` (no param) returns `200` with `{"accounts_to_delete": 0, "balances_to_delete": 0}` when the institution has no accounts
-- [ ] `DELETE /institutions/{id}` (no param) returns `200` with correct non-zero counts when accounts (and balances) exist
-- [ ] No data is modified during a dry-run
-- [ ] Returns `404` for an unknown id
+- [x] `DELETE /institutions/{id}` (no param) returns `200` with `{"accounts_to_delete": 0, "balances_to_delete": 0}` when the institution has no accounts
+- [x] `DELETE /institutions/{id}` (no param) returns `200` with correct non-zero counts when accounts (and balances) exist
+- [x] No data is modified during a dry-run
+- [x] Returns `404` for an unknown id
 
 **Destructive delete (`?confirm=true`):**
-- [ ] `DELETE /institutions/{id}?confirm=true` returns `204`
-- [ ] After confirm-delete: `GET /institutions/{id}` returns `404`
-- [ ] After confirm-delete: all accounts that belonged to the institution are gone (verified in test)
-- [ ] After confirm-delete: all balances for those accounts are gone
-- [ ] After confirm-delete: all `account_tag` rows for those accounts are gone
-- [ ] Returns `404` for an unknown id even with `?confirm=true`
+- [x] `DELETE /institutions/{id}?confirm=true` returns `204`
+- [x] After confirm-delete: `GET /institutions/{id}` returns `404`
+- [x] After confirm-delete: all accounts that belonged to the institution are gone (verified in test)
+- [x] After confirm-delete: all balances for those accounts are gone
+- [x] After confirm-delete: all `account_tag` rows for those accounts are gone
+- [x] Returns `404` for an unknown id even with `?confirm=true`
 
 ---
 
