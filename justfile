@@ -6,6 +6,8 @@ db-init:
 db-seed:
     uv run --project {{backend}} db-seed
 
+check: test lint typecheck
+
 test:
     uv run --project {{backend}} pytest
 
