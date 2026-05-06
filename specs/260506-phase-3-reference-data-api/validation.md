@@ -8,8 +8,8 @@ Phase 3 is complete and ready to merge when **all** of the following pass.
 
 ## 1. Router Registration
 
-- [ ] `backend/app/routers/currencies.py`, `tags.py`, and `institutions.py` exist
-- [ ] All three routers are registered in `app/main.py` with no prefix
+- [x] `backend/app/routers/currencies.py`, `tags.py`, and `institutions.py` exist
+- [x] All three routers are registered in `app/main.py` with no prefix
 - [ ] `GET /openapi.json` includes all endpoints from this phase with correct tags (`currencies`, `tags`, `institutions`)
 
 ---
