@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "fastapi[standard]>=0.136.1",
     "python-dotenv>=1.2.2",
     "sqlmodel>=0.0.38",
 ]
@@ -15,6 +16,7 @@ db-seed = "scripts.db_seed:main"
 
 [dependency-groups]
 dev = [
+    "httpx>=0.28.1",
     "mypy>=1.20.2",
     "pytest>=9.0.3",
     "ruff>=0.15.12",
