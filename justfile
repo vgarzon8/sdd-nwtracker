@@ -15,3 +15,6 @@ lint:
 
 typecheck:
     uv run --project {{backend}} mypy {{backend}}/app {{backend}}/scripts {{backend}}/tests
+
+dev:
+    uv run --project {{backend}} uvicorn app.main:app --reload --app-dir {{backend}}

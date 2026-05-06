@@ -4,7 +4,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 1 — DB Foundation
+## Phase 1 — DB Foundation ✓
 
 **Deliverable:** SQLite database initialized with all tables and seed data. No API or UI yet.
 
@@ -16,15 +16,16 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 2 — FastAPI Skeleton & Config
+## Phase 2 — FastAPI Skeleton & Config ✓
 
 **Deliverable:** A running FastAPI server with health endpoint, logging, and environment-based config.
 
-- Set up `FastAPI` app in `main.py`
-- Load config from `.env` via `python-dotenv` (DB path, log level, log file path)
-- Configure file-based logging with rotation
-- Add `GET /health` endpoint
-- Add OpenAPI docs available at `/docs`
+- Set up `FastAPI` app in `app/main.py`
+- Load config from `.env` via `python-dotenv` (DB path, log level, log file path, rotation settings)
+- Configure file-based logging with rotation (`RotatingFileHandler`) and stdout echo
+- Add `GET /health` endpoint (200 with DB check + version; 503 on DB failure)
+- Add OpenAPI docs available at `/docs` and `/redoc`
+- Add `just dev` recipe to run the uvicorn dev server
 
 ---
 
