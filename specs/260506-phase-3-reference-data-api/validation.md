@@ -29,18 +29,18 @@ Phase 3 is complete and ready to merge when **all** of the following pass.
 
 ## 3. Tag Endpoints
 
-- [ ] `GET /tags` returns `200` with a list of tag objects (each has `id` and `name`)
-- [ ] `POST /tags` with `{"name": "retirement"}` returns `201` with `id` and `name`
-- [ ] `POST /tags` with a duplicate name returns `409`
-- [ ] `GET /tags/{id}` returns `200` for an existing tag
-- [ ] `GET /tags/{id}` returns `404` for an unknown id
-- [ ] `PUT /tags/{id}` with a new name returns `200` with updated `name`
-- [ ] `PUT /tags/{id}` with a name that already belongs to another tag returns `409`
-- [ ] `PUT /tags/{id}` for an unknown id returns `404`
-- [ ] `DELETE /tags/{id}` returns `204`
-- [ ] After `DELETE /tags/{id}`, `GET /tags/{id}` returns `404`
-- [ ] After `DELETE /tags/{id}`, all `account_tag` rows for that tag are removed; the associated accounts still exist and are queryable (verified by direct DB query in test)
-- [ ] `DELETE /tags/{id}` returns `404` for an unknown id
+- [x] `GET /tags` returns `200` with a list of tag objects (each has `id` and `name`)
+- [x] `POST /tags` with `{"name": "retirement"}` returns `201` with `id` and `name`
+- [x] `POST /tags` with a duplicate name returns `409`
+- [x] `GET /tags/{id}` returns `200` for an existing tag
+- [x] `GET /tags/{id}` returns `404` for an unknown id
+- [x] `PUT /tags/{id}` with a new name returns `200` with updated `name`
+- [x] `PUT /tags/{id}` with a name that already belongs to another tag returns `409`
+- [x] `PUT /tags/{id}` for an unknown id returns `404`
+- [x] `DELETE /tags/{id}` returns `204`
+- [x] After `DELETE /tags/{id}`, `GET /tags/{id}` returns `404`
+- [x] After `DELETE /tags/{id}`, all `account_tag` rows for that tag are removed; the associated accounts still exist and are queryable (verified by direct DB query in test)
+- [x] `DELETE /tags/{id}` returns `404` for an unknown id
 
 ---
 
