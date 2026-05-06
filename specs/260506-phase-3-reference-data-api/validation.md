@@ -73,20 +73,20 @@ Phase 3 is complete and ready to merge when **all** of the following pass.
 
 ## 5. Test Suite
 
-- [ ] `just test` exits `0` with all tests passing
-- [ ] Phase 1 (17) + Phase 2 (4) + Phase 3 tests all pass together
-- [ ] Phase 3 test count: at least 8 currency tests + 11 tag tests + 12 institution tests = **31 new tests** (total ≥ 52)
-- [ ] No test hits a real database file; all use the in-memory SQLite fixture from `conftest.py`
-- [ ] No test depends on seed data or the dev `.env`
-- [ ] The `test_delete_tag_clears_account_tag` test verifies account survival explicitly (not just absence of the tag row)
-- [ ] The `test_delete_institution_confirm` test verifies balances and account_tag rows are removed via direct session query
+- [x] `just test` exits `0` with all tests passing
+- [x] Phase 1 (17) + Phase 2 (4) + Phase 3 tests all pass together
+- [x] Phase 3 test count: at least 8 currency tests + 11 tag tests + 12 institution tests = **31 new tests** (total ≥ 52)
+- [x] No test hits a real database file; all use the in-memory SQLite fixture from `conftest.py`
+- [x] No test depends on seed data or the dev `.env`
+- [x] The `test_delete_tag_clears_account_tag` test verifies account survival explicitly (not just absence of the tag row)
+- [x] The `test_delete_institution_confirm` test verifies balances and account_tag rows are removed via direct session query
 
 ---
 
 ## 6. Code Quality
 
-- [ ] `just lint` passes (`ruff check` and `ruff format --check`)
-- [ ] `just typecheck` passes with no mypy errors
-- [ ] All request/response bodies are typed Pydantic models (no plain `dict` returns)
-- [ ] No SQLModel table class is used directly as a request body
-- [ ] `just check` (lint + typecheck + test) exits `0`
+- [x] `just lint` passes (`ruff check` and `ruff format --check`)
+- [x] `just typecheck` passes with no mypy errors
+- [x] All request/response bodies are typed Pydantic models (no plain `dict` returns)
+- [x] No SQLModel table class is used directly as a request body
+- [x] `just check` (lint + typecheck + test) exits `0`
