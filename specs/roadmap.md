@@ -53,7 +53,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 5 — Balances API [ ]
+## Phase 5 — Balances API [X]
 
 **Deliverable:** CRUD for balances, roll-forward, and transfer endpoints.
 
