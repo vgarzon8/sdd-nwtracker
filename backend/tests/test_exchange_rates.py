@@ -132,7 +132,8 @@ def test_update_exchange_rate_not_found(client: TestClient) -> None:
 def test_update_exchange_rate_zero_rate(client: TestClient) -> None:
     _make_currency(client, "EUR")
     rate_id = _make_exchange_rate(client)["id"]
-    assert client.put(f"/exchange-rates/{rate_id}", json={"rate": "0"}).status_code == 422
+    response = client.put(f"/exchange-rates/{rate_id}", json={"rate": "0"})
+    assert response.status_code == 422
 
 
 # ---------------------------------------------------------------------------

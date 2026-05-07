@@ -34,11 +34,15 @@ def _make_balance(
     ).json()
 
 
-def _setup(client: TestClient, account_name: str = "Checking", side: str = "asset") -> int:
+def _setup(
+    client: TestClient, account_name: str = "Checking", side: str = "asset"
+) -> int:
     """Create currency + institution + account, return account_id."""
     _make_currency(client)
     inst_id = _make_institution(client)
-    return _make_account(client, name=account_name, institution_id=inst_id, side=side)["id"]
+    return _make_account(
+        client, name=account_name, institution_id=inst_id, side=side
+    )["id"]
 
 
 # ---------------------------------------------------------------------------
@@ -71,7 +75,9 @@ def test_create_balance(client: TestClient) -> None:
 
 def test_create_balance_duplicate(client: TestClient) -> None:
     acct_id = _setup(client)
-    client.post("/balances", json={"account_id": acct_id, "month": "2026-03", "amount": 100})
+    client.post(
+        "/balances", json={"account_id": acct_id, "month": "2026-03", "amount": 100}
+    )
     response = client.post(
         "/balances", json={"account_id": acct_id, "month": "2026-03", "amount": 200}
     )
@@ -243,8 +249,12 @@ def test_roll_forward_skips_existing(client: TestClient) -> None:
 def test_roll_forward_excludes_closed_accounts(client: TestClient) -> None:
     _make_currency(client)
     inst_id = _make_institution(client)
-    active = _make_account(client, name="Active", institution_id=inst_id, status="active")["id"]
-    closed = _make_account(client, name="Closed", institution_id=inst_id, status="closed")["id"]
+    active = _make_account(
+        client, name="Active", institution_id=inst_id, status="active"
+    )["id"]
+    closed = _make_account(
+        client, name="Closed", institution_id=inst_id, status="closed"
+    )["id"]
     _make_balance(client, active, "2026-03", 1000)
     _make_balance(client, closed, "2026-03", 5000)
 
@@ -252,7 +262,9 @@ def test_roll_forward_excludes_closed_accounts(client: TestClient) -> None:
     assert response.status_code == 200
     assert response.json()["months"][0]["inserted"] == 1
 
-    april_ids = {item["account_id"] for item in client.get("/balances?month=2026-04").json()}
+    april_ids = {
+        item["account_id"] for item in client.get("/balances?month=2026-04").json()
+    }
     assert active in april_ids
     assert closed not in april_ids
 
@@ -313,8 +325,12 @@ def _setup_two_accounts(
     """Create shared currency+institution, two accounts, return (from_id, to_id)."""
     _make_currency(client)
     inst_id = _make_institution(client)
-    from_id = _make_account(client, name="From", institution_id=inst_id, side=from_side)["id"]
-    to_id = _make_account(client, name="To", institution_id=inst_id, side=to_side)["id"]
+    from_id = _make_account(
+        client, name="From", institution_id=inst_id, side=from_side
+    )["id"]
+    to_id = _make_account(
+        client, name="To", institution_id=inst_id, side=to_side
+    )["id"]
     return from_id, to_id
 
 
@@ -325,7 +341,8 @@ def test_transfer_asset_to_asset(client: TestClient) -> None:
 
     response = client.post(
         "/balances/transfer",
-        json={"from_account_id": from_id, "to_account_id": to_id, "amount": 500, "month": "2026-04"},
+        json={"from_account_id": from_id, "to_account_id": to_id,
+              "amount": 500, "month": "2026-04"},
     )
     assert response.status_code == 200
     body = response.json()
@@ -340,7 +357,8 @@ def test_transfer_asset_to_liability(client: TestClient) -> None:
 
     response = client.post(
         "/balances/transfer",
-        json={"from_account_id": from_id, "to_account_id": to_id, "amount": 500, "month": "2026-04"},
+        json={"from_account_id": from_id, "to_account_id": to_id,
+              "amount": 500, "month": "2026-04"},
     )
     assert response.status_code == 200
     body = response.json()
@@ -355,7 +373,8 @@ def test_transfer_liability_to_asset(client: TestClient) -> None:
 
     response = client.post(
         "/balances/transfer",
-        json={"from_account_id": from_id, "to_account_id": to_id, "amount": 500, "month": "2026-04"},
+        json={"from_account_id": from_id, "to_account_id": to_id,
+              "amount": 500, "month": "2026-04"},
     )
     assert response.status_code == 200
     body = response.json()
@@ -370,7 +389,8 @@ def test_transfer_liability_to_liability(client: TestClient) -> None:
 
     response = client.post(
         "/balances/transfer",
-        json={"from_account_id": from_id, "to_account_id": to_id, "amount": 200, "month": "2026-04"},
+        json={"from_account_id": from_id, "to_account_id": to_id,
+              "amount": 200, "month": "2026-04"},
     )
     assert response.status_code == 200
     body = response.json()
@@ -384,7 +404,8 @@ def test_transfer_missing_from_balance(client: TestClient) -> None:
 
     response = client.post(
         "/balances/transfer",
-        json={"from_account_id": from_id, "to_account_id": to_id, "amount": 100, "month": "2026-04"},
+        json={"from_account_id": from_id, "to_account_id": to_id,
+              "amount": 100, "month": "2026-04"},
     )
     assert response.status_code == 422
 
@@ -395,7 +416,8 @@ def test_transfer_missing_to_balance(client: TestClient) -> None:
 
     response = client.post(
         "/balances/transfer",
-        json={"from_account_id": from_id, "to_account_id": to_id, "amount": 100, "month": "2026-04"},
+        json={"from_account_id": from_id, "to_account_id": to_id,
+              "amount": 100, "month": "2026-04"},
     )
     assert response.status_code == 422
 
@@ -406,6 +428,7 @@ def test_transfer_account_not_found(client: TestClient) -> None:
 
     response = client.post(
         "/balances/transfer",
-        json={"from_account_id": from_id, "to_account_id": 9999, "amount": 100, "month": "2026-04"},
+        json={"from_account_id": from_id, "to_account_id": 9999,
+              "amount": 100, "month": "2026-04"},
     )
     assert response.status_code == 404
