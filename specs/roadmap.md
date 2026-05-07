@@ -59,7 +59,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 - `GET/POST /balances`, `GET/PUT/DELETE /balances/{id}`
 - `GET /balances?month=YYYY-MM` — list balances for a month with account details and category summaries
-- `POST /balances/roll-forward` — copy last month's balances to a new month for all active accounts (insert-or-ignore)
+- `POST /balances/roll-forward` — cascade balances forward to a target month for all active accounts; auto-fills any intermediate months to preserve time-series continuity (insert-or-ignore per month)
 - `POST /balances/transfer` — apply a transfer between two accounts for a given month
 - Integration tests for roll-forward idempotency and transfer accounting logic
 

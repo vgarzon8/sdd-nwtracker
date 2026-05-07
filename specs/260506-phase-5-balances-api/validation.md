@@ -28,12 +28,13 @@ uv run ruff check app/                     # no lint errors
 - Each item includes `account_name`, `institution_id`, `currency_code`, `side`
 
 **Roll-forward**
-- POST /balances/roll-forward with valid target month → 200, body has `inserted` and `skipped`
-- `inserted + skipped == number of active accounts with a source balance`
-- Second call to same target month: `inserted == 0`, `skipped == N`
-- Closed accounts are absent from the rolled-forward records
+- POST /balances/roll-forward with adjacent target month → 200, `months` list has one entry with `month`, `inserted`, `skipped`
+- `inserted + skipped == number of active accounts with a source balance` (per month entry)
+- Second call to same target month: entry has `inserted == 0`, `skipped == N`
+- Skipping months: response `months` list contains one entry per intermediate month plus the target, in order
+- Closed accounts are absent from all rolled-forward months
 - No balances in DB → 422
-- Target month == source month → 422
+- No months strictly before target → 422
 
 **Transfer**
 - Transfer asset → asset: from balance decreases, to balance increases
@@ -59,10 +60,16 @@ Run against the dev DB after seeding with `just db-seed`.
    - `POST /balances` with that account_id and month
    - Verify 201 and correct fields
 
-3. **Roll-forward**
+3. **Roll-forward — adjacent month**
    - `POST /balances/roll-forward` with `{"month": "2026-05"}`
+   - Verify response has `months` list with one entry for 2026-05
    - Verify each active account from 2026-04 appears in 2026-05
-   - Run again — verify `inserted=0`
+   - Run again — verify entry has `inserted=0`
+
+3b. **Roll-forward — cascade**
+   - `POST /balances/roll-forward` with `{"month": "2026-07"}` (assuming last data is in 2026-04)
+   - Verify response `months` list has entries for 2026-05, 2026-06, 2026-07
+   - Verify `GET /balances?month=2026-06` returns balances for all active accounts
 
 4. **Transfer — paydown scenario**
    - Pick a checking account (asset) and a credit card account (liability) that both have balances in 2026-05
@@ -79,7 +86,7 @@ Run against the dev DB after seeding with `just db-seed`.
 
 | Case | Expected |
 |---|---|
-| Roll-forward when all active accounts already have target-month balances | `inserted=0`, `skipped=N`, 200 |
+| Roll-forward when all active accounts already have target-month balances | 200; single entry with `inserted=0`, `skipped=N` |
 | Transfer with `amount=0` | 422 (amount must be positive) |
 | Transfer between same account (`from == to`) | 422 or 200 with net-zero change — spec doesn't require special handling; implementation may return 422 for clarity |
 | PUT /balances/{id} with no body fields | 422 (amount is required) |
@@ -114,12 +121,19 @@ Run against the dev DB after seeding with `just db-seed`.
 
 **Note:** Roll-forward source-month logic was refined during testing. The source is now the most recent month strictly before the target month, not the absolute max. This prevents false 422 errors when the target month already has partial balances. requirements.md updated accordingly.
 
+### Cascade roll-forward (post-phase addition)
+- `uv run pytest tests/test_balances.py -v` — 26/26 PASS
+- `uv run pytest -v` — 103/103 PASS
+- `ruff check app/routers/balances.py` — PASS
+- `mypy app/routers/balances.py` — PASS
+- Committed: `feat(phase-5): roll-forward auto-cascades through intermediate months`
+
 ---
 
 ## Definition of Done
 
-- [x] All `test_balances.py` tests pass (25/25)
-- [x] No regressions in existing test files (102/102)
+- [x] All `test_balances.py` tests pass (26/26)
+- [x] No regressions in existing test files (103/103)
 - [x] `mypy app/routers/balances.py` exits 0
 - [x] `ruff check app/` exits 0
 - [ ] Roll-forward and transfer endpoints visible and documented in `/docs`
