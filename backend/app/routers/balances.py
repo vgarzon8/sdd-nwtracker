@@ -51,6 +51,18 @@ class RollForwardResult(BaseModel):
     skipped: int
 
 
+class TransferRequest(BaseModel):
+    from_account_id: int
+    to_account_id: int
+    amount: int
+    month: str
+
+
+class TransferResult(BaseModel):
+    from_balance: BalanceRead
+    to_balance: BalanceRead
+
+
 def _detail(balance: Balance, account: Account) -> BalanceReadDetail:
     assert balance.id is not None
     return BalanceReadDetail(
@@ -208,3 +220,72 @@ def roll_forward(
 
     session.commit()
     return RollForwardResult(month=body.month, inserted=inserted, skipped=skipped)
+
+
+@router.post("/balances/transfer", response_model=TransferResult)
+def transfer(
+    body: TransferRequest, session: Session = Depends(get_session)
+) -> TransferResult:
+    if body.amount <= 0:
+        raise HTTPException(status_code=422, detail="Transfer amount must be positive")
+
+    from_account = session.get(Account, body.from_account_id)
+    if not from_account:
+        raise HTTPException(
+            status_code=404, detail=f"Account {body.from_account_id} not found"
+        )
+    to_account = session.get(Account, body.to_account_id)
+    if not to_account:
+        raise HTTPException(
+            status_code=404, detail=f"Account {body.to_account_id} not found"
+        )
+
+    from_balance = session.exec(
+        select(Balance).where(
+            Balance.account_id == body.from_account_id, Balance.month == body.month
+        )
+    ).first()
+    if not from_balance:
+        raise HTTPException(
+            status_code=422,
+            detail=(
+                f"Account {body.from_account_id}"
+                f" has no balance for {body.month}"
+            ),
+        )
+
+    to_balance = session.exec(
+        select(Balance).where(
+            Balance.account_id == body.to_account_id, Balance.month == body.month
+        )
+    ).first()
+    if not to_balance:
+        raise HTTPException(
+            status_code=422,
+            detail=(
+                f"Account {body.to_account_id}"
+                f" has no balance for {body.month}"
+            ),
+        )
+
+    # Delta logic: direction depends on account side
+    if from_account.side == AccountSide.asset:
+        from_balance.amount -= body.amount  # money leaves asset
+    else:
+        from_balance.amount += body.amount  # liability grows (borrowing)
+
+    if to_account.side == AccountSide.asset:
+        to_balance.amount += body.amount  # money arrives in asset
+    else:
+        to_balance.amount -= body.amount  # liability shrinks (paydown)
+
+    session.add(from_balance)
+    session.add(to_balance)
+    session.commit()
+    session.refresh(from_balance)
+    session.refresh(to_balance)
+
+    return TransferResult(
+        from_balance=_read(from_balance),
+        to_balance=_read(to_balance),
+    )
