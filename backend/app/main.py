@@ -12,7 +12,7 @@ from app.config import (
     LOG_LEVEL,
     LOG_MAX_BYTES,
 )
-from app.routers import accounts, currencies, health, institutions, tags
+from app.routers import accounts, balances, currencies, health, institutions, tags
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -54,3 +54,4 @@ app.include_router(currencies.router)
 app.include_router(tags.router)
 app.include_router(institutions.router)
 app.include_router(accounts.router)
+app.include_router(balances.router)
