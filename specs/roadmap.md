@@ -4,7 +4,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 1 — DB Foundation ✓
+## Phase 1 — DB Foundation [X]
 
 **Deliverable:** SQLite database initialized with all tables and seed data. No API or UI yet.
 
@@ -16,7 +16,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 2 — FastAPI Skeleton & Config ✓
+## Phase 2 — FastAPI Skeleton & Config [X]
 
 **Deliverable:** A running FastAPI server with health endpoint, logging, and environment-based config.
 
@@ -29,7 +29,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 3 — Reference Data API (Currencies, Tags, Institutions)
+## Phase 3 — Reference Data API (Currencies, Tags, Institutions) [X]
 
 **Deliverable:** Full CRUD REST endpoints for currencies, tags, and institutions.
 
@@ -41,7 +41,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 4 — Accounts API
+## Phase 4 — Accounts API [X]
 
 **Deliverable:** Full CRUD for accounts, including tag association.
 
@@ -53,7 +53,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 5 — Balances API
+## Phase 5 — Balances API [ ]
 
 **Deliverable:** CRUD for balances, roll-forward, and transfer endpoints.
 
@@ -65,7 +65,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 6 — Exchange Rates API
+## Phase 6 — Exchange Rates API [ ]
 
 **Deliverable:** CRUD for exchange rates.
 
@@ -76,7 +76,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 7 — Reports API
+## Phase 7 — Reports API [ ]
 
 **Deliverable:** Net worth snapshot report endpoint.
 
@@ -87,7 +87,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 8 — CSV Import & Export
+## Phase 8 — CSV Import & Export [ ]
 
 **Deliverable:** Idempotent CSV import and full CSV export.
 
@@ -98,7 +98,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 9 — Frontend Scaffold
+## Phase 9 — Frontend Scaffold [ ]
 
 **Deliverable:** React app running in dev with routing and API client wired up to the backend.
 
@@ -111,7 +111,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 10 — Reference Data UI (Currencies, Tags, Institutions)
+## Phase 10 — Reference Data UI (Currencies, Tags, Institutions) [ ]
 
 **Deliverable:** List and CRUD forms for currencies, tags, and institutions.
 
@@ -121,7 +121,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 11 — Accounts UI
+## Phase 11 — Accounts UI [ ]
 
 **Deliverable:** Account list and CRUD forms.
 
@@ -131,7 +131,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 12 — Balance Entry UI
+## Phase 12 — Balance Entry UI [ ]
 
 **Deliverable:** Monthly balance entry and roll-forward workflow.
 
@@ -143,7 +143,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 13 — Reports UI
+## Phase 13 — Reports UI [ ]
 
 **Deliverable:** Net worth dashboard.
 
@@ -154,7 +154,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 14 — Import / Export UI
+## Phase 14 — Import / Export UI [ ]
 
 **Deliverable:** CSV import and export accessible from the browser.
 
@@ -163,7 +163,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 15 — AI Foundation
+## Phase 15 — AI Foundation [ ]
 
 **Deliverable:** Configurable AI provider wired into the backend; tool framework in place; no UI yet.
 
@@ -176,7 +176,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 16 — AI Write Tools & Confirmation Flow
+## Phase 16 — AI Write Tools & Confirmation Flow [ ]
 
 **Deliverable:** Assistant can propose data changes; backend returns structured diffs for user confirmation.
 
@@ -188,7 +188,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 17 — Chat Assistant UI
+## Phase 17 — Chat Assistant UI [ ]
 
 **Deliverable:** Persistent chat panel in the frontend; user can converse with the assistant.
 
@@ -200,7 +200,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 18 — Anomaly & Trend Alerts
+## Phase 18 — Anomaly & Trend Alerts [ ]
 
 **Deliverable:** AI scans each month's balances and surfaces notable changes.
 
@@ -212,7 +212,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 19 — Monthly Narrative Report
+## Phase 19 — Monthly Narrative Report [ ]
 
 **Deliverable:** AI generates a written summary of the month's financial picture.
 
@@ -223,7 +223,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 20 — Smart CSV Import Assistance
+## Phase 20 — Smart CSV Import Assistance [ ]
 
 **Deliverable:** AI helps the user map and clean CSV data during import.
 
