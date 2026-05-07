@@ -181,18 +181,15 @@ def roll_forward(
         select(Balance).where(Balance.account_id.in_(active_ids))  # type: ignore[attr-defined]
     ).all()
 
-    if not all_active_balances:
+    months_before_target = [
+        b.month for b in all_active_balances if b.month < body.month
+    ]
+    if not months_before_target:
         raise HTTPException(
             status_code=422, detail="No balances found to roll forward from"
         )
 
-    source_month = max(b.month for b in all_active_balances)
-
-    if source_month == body.month:
-        raise HTTPException(
-            status_code=422,
-            detail=f"Target month '{body.month}' is the same as the source month",
-        )
+    source_month = max(months_before_target)
 
     source_by_account = {
         b.account_id: b
