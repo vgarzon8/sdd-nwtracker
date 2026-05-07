@@ -34,8 +34,8 @@ uv run ruff check app/                           # no lint errors
 - Filter with no match → `[]`
 
 **Precision**
-- Rate posted as `"0.9150"` must be returned as `"0.9150"` (string, four decimal places)
-- Rate posted as `7.1` must be stored and returned as `"7.1000"`
+- Rate posted as `"0.9150"` must be returned as `"0.9150"` (string, four decimal places — trailing zero preserved)
+- Note: SQLite does not enforce Numeric precision at the storage level; trailing zeros are preserved only when the value is submitted as a string with explicit decimal places (e.g. `"7.1000"`). Submitting `7.1` as a JSON number may return `"7.1"` rather than `"7.1000"`. Clients should always submit rates as 4dp strings.
 
 ---
 
@@ -83,11 +83,28 @@ Run against the dev DB after seeding with `just db-seed`.
 
 ---
 
+## Implementation Status
+
+### Task Groups 1 & 2 — CRUD Router + Registration
+- `ruff check app/routers/exchange_rates.py` — PASS
+- `mypy app/routers/exchange_rates.py` — PASS
+- `ruff check app/main.py` — PASS
+- Committed: `feat(phase-6): Exchange Rates CRUD endpoints and router registration`
+
+### Task Group 3 — Tests
+- `uv run pytest tests/test_exchange_rates.py -v` — 18/18 PASS
+- `uv run pytest -v` — 121/121 PASS (no regressions)
+- `ruff check app/` — PASS
+- `mypy app/routers/exchange_rates.py` — PASS
+- Committed: `feat(phase-6): exchange rate tests (18 cases)`
+
+---
+
 ## Definition of Done
 
-- [ ] All `test_exchange_rates.py` tests pass
-- [ ] No regressions in existing test files
-- [ ] `mypy app/` exits 0 on new files
-- [ ] `ruff check app/` exits 0
+- [x] All `test_exchange_rates.py` tests pass (18/18)
+- [x] No regressions in existing test files (121/121)
+- [x] `mypy app/routers/exchange_rates.py` exits 0
+- [x] `ruff check app/` exits 0
 - [ ] Exchange rate endpoints visible in `/docs`
 - [ ] Manual walkthrough completed against seeded dev DB
