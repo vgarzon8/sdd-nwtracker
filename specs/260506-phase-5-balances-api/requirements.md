@@ -73,12 +73,18 @@ Returns all DB fields. When `month` query param is provided, the list response e
 |---|---|---|
 | `month` | yes | Target month to roll forward into (`YYYY-MM`) |
 
-### RollForwardResult
+### RollForwardResponse
 
 | Field | Notes |
 |---|---|
-| `month` | Target month |
-| `inserted` | Number of new balance records created |
+| `months` | List of `RollForwardMonthResult`, one per month processed (in chronological order) |
+
+### RollForwardMonthResult
+
+| Field | Notes |
+|---|---|
+| `month` | The month processed (`YYYY-MM`) |
+| `inserted` | Number of new balance records created for this month |
 | `skipped` | Number skipped because a record already existed for that (account, month) |
 
 ### TransferRequest
@@ -106,9 +112,15 @@ The most recent month **strictly before the target month** for which any active 
 
 Closed accounts are excluded. Active accounts with no balance in the source month are also skipped (no zero-fill).
 
-### Roll-forward is idempotent
+### Roll-forward auto-cascades through intermediate months
 
-Uses insert-or-ignore semantics. Re-running for the same target month returns `inserted=0, skipped=N` with no data change.
+If the target month is more than one month ahead of the source, all intermediate months are filled in order before reaching the target. Each intermediate month uses the previous one as its source, preserving continuity. The response lists one `RollForwardMonthResult` per month processed.
+
+Example: source is 2026-03, target is 2026-06 → response contains entries for 2026-04, 2026-05, 2026-06 in that order.
+
+### Roll-forward is idempotent per month
+
+Each month in the cascade uses insert-or-ignore semantics. Re-running for the same target produces `inserted=0, skipped=N` for the already-populated month.
 
 ### Transfer requires existing balance records
 

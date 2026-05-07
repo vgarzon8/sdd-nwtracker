@@ -190,10 +190,11 @@ def test_roll_forward_basic(client: TestClient) -> None:
 
     response = client.post("/balances/roll-forward", json={"month": "2026-04"})
     assert response.status_code == 200
-    body = response.json()
-    assert body["month"] == "2026-04"
-    assert body["inserted"] == 2
-    assert body["skipped"] == 0
+    months = response.json()["months"]
+    assert len(months) == 1
+    assert months[0]["month"] == "2026-04"
+    assert months[0]["inserted"] == 2
+    assert months[0]["skipped"] == 0
 
     april = client.get("/balances?month=2026-04").json()
     amounts = {item["account_id"]: item["amount"] for item in april}
@@ -210,9 +211,9 @@ def test_roll_forward_idempotent(client: TestClient) -> None:
     client.post("/balances/roll-forward", json={"month": "2026-04"})
     response = client.post("/balances/roll-forward", json={"month": "2026-04"})
     assert response.status_code == 200
-    body = response.json()
-    assert body["inserted"] == 0
-    assert body["skipped"] == 1
+    month_result = response.json()["months"][0]
+    assert month_result["inserted"] == 0
+    assert month_result["skipped"] == 1
 
     assert len(client.get("/balances?month=2026-04").json()) == 1
 
@@ -229,9 +230,9 @@ def test_roll_forward_skips_existing(client: TestClient) -> None:
 
     response = client.post("/balances/roll-forward", json={"month": "2026-04"})
     assert response.status_code == 200
-    body = response.json()
-    assert body["inserted"] == 1
-    assert body["skipped"] == 1
+    month_result = response.json()["months"][0]
+    assert month_result["inserted"] == 1
+    assert month_result["skipped"] == 1
 
     # acct2's pre-existing balance should not be overwritten
     april = client.get("/balances?month=2026-04").json()
@@ -249,8 +250,7 @@ def test_roll_forward_excludes_closed_accounts(client: TestClient) -> None:
 
     response = client.post("/balances/roll-forward", json={"month": "2026-04"})
     assert response.status_code == 200
-    body = response.json()
-    assert body["inserted"] == 1
+    assert response.json()["months"][0]["inserted"] == 1
 
     april_ids = {item["account_id"] for item in client.get("/balances?month=2026-04").json()}
     assert active in april_ids
@@ -269,6 +269,35 @@ def test_roll_forward_same_month(client: TestClient) -> None:
 
     response = client.post("/balances/roll-forward", json={"month": "2026-03"})
     assert response.status_code == 422
+
+
+def test_roll_forward_cascade(client: TestClient) -> None:
+    """Skipping months fills all intermediate months in order."""
+    _make_currency(client)
+    inst_id = _make_institution(client)
+    acct1 = _make_account(client, name="A1", institution_id=inst_id)["id"]
+    acct2 = _make_account(client, name="A2", institution_id=inst_id)["id"]
+    _make_balance(client, acct1, "2026-01", 1000)
+    _make_balance(client, acct2, "2026-01", 2000)
+
+    response = client.post("/balances/roll-forward", json={"month": "2026-04"})
+    assert response.status_code == 200
+    months = response.json()["months"]
+    assert [m["month"] for m in months] == ["2026-02", "2026-03", "2026-04"]
+    assert all(m["inserted"] == 2 for m in months)
+    assert all(m["skipped"] == 0 for m in months)
+
+    # All intermediate months populated
+    for month in ("2026-02", "2026-03", "2026-04"):
+        items = client.get(f"/balances?month={month}").json()
+        assert len(items) == 2
+
+    # Each month carries forward the same amounts
+    for month in ("2026-02", "2026-03", "2026-04"):
+        items = client.get(f"/balances?month={month}").json()
+        amounts = {item["account_id"]: item["amount"] for item in items}
+        assert amounts[acct1] == 1000
+        assert amounts[acct2] == 2000
 
 
 # ---------------------------------------------------------------------------
