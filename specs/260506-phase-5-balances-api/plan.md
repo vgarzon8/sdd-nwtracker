@@ -36,16 +36,23 @@
 
 **File:** `backend/app/routers/balances.py` (same file, added to router)
 
-2.1 Define `RollForwardRequest` (body: `month: str`) and `RollForwardResult` (body: `month`, `inserted`, `skipped`)
+2.1 Define schemas:
+- `RollForwardRequest` (body: `month: str`)
+- `RollForwardMonthResult` (`month`, `inserted`, `skipped`) — result for one month
+- `RollForwardResponse` (`months: list[RollForwardMonthResult]`) — response envelope
 
-2.2 Implement `POST /balances/roll-forward`
-- Validate target `month` format
-- Query all active accounts
-- Find the most recent source month: `SELECT MAX(month) FROM balance WHERE account_id IN (...active account ids...)`
-- If no source month found → 422 with message `"No balances found to roll forward from"`
-- If source month == target month → 422 with message `"Target month is the same as the source month"`
-- For each active account that has a balance in the source month, attempt to insert a balance for the target month with the same amount; skip if `(account_id, target_month)` already exists
-- Return `RollForwardResult`
+2.2 Add helpers `_next_month(month: str) -> str` and `_months_in_range(start, end) -> list[str]` for month arithmetic (handles year-boundary rollover)
+
+2.3 Implement `POST /balances/roll-forward`
+- Query all active accounts; 422 if none
+- Find source month: max month strictly before target among all active-account balances; 422 if none
+- Build list of months to process: `_months_in_range(source_month, target_month)` — covers intermediate months automatically
+- For each month in the list (in order):
+  - Re-query active balances so newly inserted records are visible as source for the next step
+  - Find the immediately preceding month's balances as source
+  - Insert-or-ignore for each active account
+  - Commit; append `RollForwardMonthResult` to results
+- Return `RollForwardResponse(months=results)`
 
 ---
 
@@ -100,18 +107,19 @@ Use `_make_currency`, `_make_institution`, `_make_account` helpers (mirroring ex
 5.12 `test_list_by_month_includes_account_detail` — response includes account_name, currency_code, side
 
 **Roll-forward**
-5.13 `test_roll_forward_basic` — seeds balances for month A; roll forward to month B; all active accounts get balances in B
+5.13 `test_roll_forward_basic` — seeds balances for month A; roll forward to month B; response has one entry, all active accounts get balances in B
 5.14 `test_roll_forward_idempotent` — roll forward twice to same target month; second call: inserted=0, all skipped
 5.15 `test_roll_forward_skips_existing` — one account already has a balance in target month; that one is skipped, others inserted
 5.16 `test_roll_forward_excludes_closed_accounts` — closed account has balance in source month; not rolled forward
 5.17 `test_roll_forward_no_balances` — no balances exist → 422
-5.18 `test_roll_forward_same_month` — target month equals source month → 422
+5.18 `test_roll_forward_same_month` — no months strictly before target exist (only month == target) → 422
+5.19 `test_roll_forward_cascade` — source is 2026-01, target is 2026-04; response has three entries (2026-02, 2026-03, 2026-04); all intermediate months populated with correct amounts
 
 **Transfer**
-5.19 `test_transfer_asset_to_asset` — asset sends to asset: from decreases, to increases
-5.20 `test_transfer_asset_to_liability` — asset → liability (paydown): asset decreases, liability decreases
-5.21 `test_transfer_liability_to_asset` — liability → asset (borrowing): liability increases, asset increases
-5.22 `test_transfer_liability_to_liability` — liability → liability: from increases, to decreases
-5.23 `test_transfer_missing_from_balance` — from account has no balance for month → 422
-5.24 `test_transfer_missing_to_balance` — to account has no balance for month → 422
-5.25 `test_transfer_account_not_found` — from_account_id doesn't exist → 404
+5.20 `test_transfer_asset_to_asset` — asset sends to asset: from decreases, to increases
+5.21 `test_transfer_asset_to_liability` — asset → liability (paydown): asset decreases, liability decreases
+5.22 `test_transfer_liability_to_asset` — liability → asset (borrowing): liability increases, asset increases
+5.23 `test_transfer_liability_to_liability` — liability → liability: from increases, to decreases
+5.24 `test_transfer_missing_from_balance` — from account has no balance for month → 422
+5.25 `test_transfer_missing_to_balance` — to account has no balance for month → 422
+5.26 `test_transfer_account_not_found` — from_account_id doesn't exist → 404
