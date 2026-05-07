@@ -65,7 +65,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 6 — Exchange Rates API [ ]
+## Phase 6 — Exchange Rates API [X]
 
 **Deliverable:** CRUD for exchange rates.
 
