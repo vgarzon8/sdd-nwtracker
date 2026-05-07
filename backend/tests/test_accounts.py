@@ -4,8 +4,6 @@ from sqlmodel import Session, select
 from app.models import (
     AccountTag,
     Balance,
-    Currency,
-    Institution,
     Tag,
 )
 
@@ -390,10 +388,3 @@ def test_delete_account_confirm_leaves_tag(
 def test_delete_account_not_found(client: TestClient) -> None:
     assert client.delete("/accounts/9999").status_code == 404
     assert client.delete("/accounts/9999?confirm=true").status_code == 404
-
-
-# ---------------------------------------------------------------------------
-# Unused imports guard (ensure models are importable from tests)
-# ---------------------------------------------------------------------------
-
-_GUARD = (Currency, Institution)

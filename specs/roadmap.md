@@ -41,7 +41,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 4 — Accounts API [ ]
+## Phase 4 — Accounts API [X]
 
 **Deliverable:** Full CRUD for accounts, including tag association.
 
