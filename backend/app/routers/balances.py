@@ -45,10 +45,14 @@ class RollForwardRequest(BaseModel):
     month: str
 
 
-class RollForwardResult(BaseModel):
+class RollForwardMonthResult(BaseModel):
     month: str
     inserted: int
     skipped: int
+
+
+class RollForwardResponse(BaseModel):
+    months: list[RollForwardMonthResult]
 
 
 class TransferRequest(BaseModel):
@@ -61,6 +65,25 @@ class TransferRequest(BaseModel):
 class TransferResult(BaseModel):
     from_balance: BalanceRead
     to_balance: BalanceRead
+
+
+def _next_month(month: str) -> str:
+    y, m = int(month[:4]), int(month[5:])
+    m += 1
+    if m > 12:
+        m = 1
+        y += 1
+    return f"{y:04d}-{m:02d}"
+
+
+def _months_in_range(start: str, end: str) -> list[str]:
+    """Return YYYY-MM months from start+1 to end inclusive."""
+    months: list[str] = []
+    current = _next_month(start)
+    while current <= end:
+        months.append(current)
+        current = _next_month(current)
+    return months
 
 
 def _detail(balance: Balance, account: Account) -> BalanceReadDetail:
@@ -165,10 +188,10 @@ def delete_balance(
     return Response(status_code=204)
 
 
-@router.post("/balances/roll-forward", response_model=RollForwardResult)
+@router.post("/balances/roll-forward", response_model=RollForwardResponse)
 def roll_forward(
     body: RollForwardRequest, session: Session = Depends(get_session)
-) -> RollForwardResult:
+) -> RollForwardResponse:
     active_accounts = session.exec(
         select(Account).where(Account.status == AccountStatus.active)
     ).all()
@@ -177,46 +200,52 @@ def roll_forward(
     if not active_ids:
         raise HTTPException(status_code=422, detail="No active accounts found")
 
-    all_active_balances = session.exec(
+    seed_balances = session.exec(
         select(Balance).where(Balance.account_id.in_(active_ids))  # type: ignore[attr-defined]
     ).all()
 
-    months_before_target = [
-        b.month for b in all_active_balances if b.month < body.month
-    ]
+    months_before_target = [b.month for b in seed_balances if b.month < body.month]
     if not months_before_target:
         raise HTTPException(
             status_code=422, detail="No balances found to roll forward from"
         )
 
     source_month = max(months_before_target)
+    months_to_process = _months_in_range(source_month, body.month)
 
-    source_by_account = {
-        b.account_id: b
-        for b in all_active_balances
-        if b.month == source_month
-    }
-
-    existing_in_target = {
-        b.account_id
-        for b in session.exec(
-            select(Balance).where(Balance.month == body.month)
+    results: list[RollForwardMonthResult] = []
+    for target in months_to_process:
+        # Re-query after each commit so the next month sees newly inserted records
+        all_active_balances = session.exec(
+            select(Balance).where(Balance.account_id.in_(active_ids))  # type: ignore[attr-defined]
         ).all()
-    }
+        prev_month = max(b.month for b in all_active_balances if b.month < target)
+        source_by_account = {
+            b.account_id: b
+            for b in all_active_balances
+            if b.month == prev_month
+        }
+        existing_in_target = {
+            b.account_id
+            for b in session.exec(
+                select(Balance).where(Balance.month == target)
+            ).all()
+        }
+        inserted = skipped = 0
+        for account_id, src in source_by_account.items():
+            if account_id in existing_in_target:
+                skipped += 1
+            else:
+                session.add(
+                    Balance(account_id=account_id, month=target, amount=src.amount)
+                )
+                inserted += 1
+        session.commit()
+        results.append(
+            RollForwardMonthResult(month=target, inserted=inserted, skipped=skipped)
+        )
 
-    inserted = 0
-    skipped = 0
-    for account_id, src in source_by_account.items():
-        if account_id in existing_in_target:
-            skipped += 1
-        else:
-            session.add(
-                Balance(account_id=account_id, month=body.month, amount=src.amount)
-            )
-            inserted += 1
-
-    session.commit()
-    return RollForwardResult(month=body.month, inserted=inserted, skipped=skipped)
+    return RollForwardResponse(months=results)
 
 
 @router.post("/balances/transfer", response_model=TransferResult)
