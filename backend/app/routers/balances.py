@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, select
 
 from app.db import get_session
-from app.models import Account, AccountSide, Balance
+from app.models import Account, AccountSide, AccountStatus, Balance
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +39,16 @@ class BalanceReadDetail(BaseModel):
 
 class BalanceUpdate(BaseModel):
     amount: int
+
+
+class RollForwardRequest(BaseModel):
+    month: str
+
+
+class RollForwardResult(BaseModel):
+    month: str
+    inserted: int
+    skipped: int
 
 
 def _detail(balance: Balance, account: Account) -> BalanceReadDetail:
@@ -141,3 +151,60 @@ def delete_balance(
     session.delete(balance)
     session.commit()
     return Response(status_code=204)
+
+
+@router.post("/balances/roll-forward", response_model=RollForwardResult)
+def roll_forward(
+    body: RollForwardRequest, session: Session = Depends(get_session)
+) -> RollForwardResult:
+    active_accounts = session.exec(
+        select(Account).where(Account.status == AccountStatus.active)
+    ).all()
+    active_ids = [a.id for a in active_accounts if a.id is not None]
+
+    if not active_ids:
+        raise HTTPException(status_code=422, detail="No active accounts found")
+
+    all_active_balances = session.exec(
+        select(Balance).where(Balance.account_id.in_(active_ids))  # type: ignore[attr-defined]
+    ).all()
+
+    if not all_active_balances:
+        raise HTTPException(
+            status_code=422, detail="No balances found to roll forward from"
+        )
+
+    source_month = max(b.month for b in all_active_balances)
+
+    if source_month == body.month:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Target month '{body.month}' is the same as the source month",
+        )
+
+    source_by_account = {
+        b.account_id: b
+        for b in all_active_balances
+        if b.month == source_month
+    }
+
+    existing_in_target = {
+        b.account_id
+        for b in session.exec(
+            select(Balance).where(Balance.month == body.month)
+        ).all()
+    }
+
+    inserted = 0
+    skipped = 0
+    for account_id, src in source_by_account.items():
+        if account_id in existing_in_target:
+            skipped += 1
+        else:
+            session.add(
+                Balance(account_id=account_id, month=body.month, amount=src.amount)
+            )
+            inserted += 1
+
+    session.commit()
+    return RollForwardResult(month=body.month, inserted=inserted, skipped=skipped)
