@@ -140,8 +140,7 @@ def create_balance(
         raise HTTPException(
             status_code=409,
             detail=(
-                f"Balance for account {body.account_id}"
-                f" in {body.month} already exists"
+                f"Balance for account {body.account_id} in {body.month} already exists"
             ),
         )
     session.refresh(balance)
@@ -221,15 +220,11 @@ def roll_forward(
         ).all()
         prev_month = max(b.month for b in all_active_balances if b.month < target)
         source_by_account = {
-            b.account_id: b
-            for b in all_active_balances
-            if b.month == prev_month
+            b.account_id: b for b in all_active_balances if b.month == prev_month
         }
         existing_in_target = {
             b.account_id
-            for b in session.exec(
-                select(Balance).where(Balance.month == target)
-            ).all()
+            for b in session.exec(select(Balance).where(Balance.month == target)).all()
         }
         inserted = skipped = 0
         for account_id, src in source_by_account.items():
@@ -274,10 +269,7 @@ def transfer(
     if not from_balance:
         raise HTTPException(
             status_code=422,
-            detail=(
-                f"Account {body.from_account_id}"
-                f" has no balance for {body.month}"
-            ),
+            detail=(f"Account {body.from_account_id} has no balance for {body.month}"),
         )
 
     to_balance = session.exec(
@@ -288,10 +280,7 @@ def transfer(
     if not to_balance:
         raise HTTPException(
             status_code=422,
-            detail=(
-                f"Account {body.to_account_id}"
-                f" has no balance for {body.month}"
-            ),
+            detail=(f"Account {body.to_account_id} has no balance for {body.month}"),
         )
 
     # Delta logic: direction depends on account side
