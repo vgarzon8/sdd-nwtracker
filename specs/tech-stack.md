@@ -24,7 +24,9 @@
 | Styling            | Tailwind CSS            | Utility-first; no custom CSS files except global resets               |
 | Component library  | shadcn/ui               | Accessible, unstyled components built on Radix UI + Tailwind          |
 | Data fetching      | TanStack Query (React Query) | Server state management; handles caching and invalidation        |
-| HTTP client        | Axios or fetch          | Thin wrapper over FastAPI REST endpoints                              |
+| HTTP client        | fetch                   | Thin wrapper in `src/api/`; base URL `/api`, proxied to FastAPI in dev |
+| Linter             | ESLint                  | Ships with Vite `react-ts` template; extended with `typescript-eslint`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh` |
+| Formatter          | Prettier                | `prettier` + `eslint-config-prettier`; `.prettierrc` at `frontend/` root |
 
 ## AI / Generative Features
 
@@ -65,9 +67,9 @@ AI_HISTORY_ENABLED=true     # persist conversation history
 
 | Concern          | Choice | Notes                                                                                  |
 |------------------|--------|----------------------------------------------------------------------------------------|
-| Command runner   | just   | `justfile` at repo root; single entry point for common dev tasks (init, seed, test, dev server) |
-| Linter/formatter | ruff   | Replaces flake8 + black; configured in `pyproject.toml`                                |
-| Type checker     | mypy   | Static type checking for Python; configured in `pyproject.toml`                        |
+| Command runner        | just | `justfile` at repo root; covers both backend (`test`, `lint`, `typecheck`, `dev`) and frontend (`frontend-dev`, `frontend-lint`, `frontend-typecheck`, `frontend-format`) |
+| Linter/formatter (BE) | ruff | Replaces flake8 + black; configured in `pyproject.toml`                                |
+| Type checker (BE)     | mypy | Static type checking for Python; configured in `pyproject.toml`                        |
 
 ## Infrastructure
 

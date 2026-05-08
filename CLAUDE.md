@@ -29,6 +29,8 @@ When starting a new phase, use the `/feature-spec` skill, which reads the roadma
 
 All dev commands run through `just` (the justfile at the project root):
 
+### Backend
+
 ```bash
 just dev          # Start FastAPI dev server (auto-reload, port 8000)
 just test         # Run all tests
@@ -36,18 +38,29 @@ just test <path>  # Run specific test file or function, e.g. just test backend/t
 just lint         # ruff check + format check
 just format       # Auto-format with ruff
 just typecheck    # mypy strict mode
-just check        # Run test + lint + typecheck (CI equivalent)
+just check        # Run test + lint + typecheck + frontend-lint + frontend-typecheck (CI equivalent)
 just db-init      # Create SQLite schema
 just db-seed      # Populate sample data
 ```
 
+### Frontend
+
+```bash
+just frontend-dev        # Start Vite dev server (port 5173, proxies /api/* to FastAPI)
+just frontend-install    # npm install
+just frontend-lint       # ESLint
+just frontend-typecheck  # tsc --noEmit (strict)
+just frontend-format     # Prettier --write src/
+```
+
 ## Architecture
 
-**nwtracker** is a local-first personal net worth tracker. Currently backend-only (phases 1–6 complete); frontend is planned for a later phase.
+**nwtracker** is a local-first personal net worth tracker. Backend complete (phases 1–8); frontend scaffolded in phase 9.
+
+### Backend (`backend/`)
 
 **Stack:** Python 3.12+, FastAPI, SQLModel (SQLAlchemy + Pydantic), SQLite, managed by `uv`.
 
-**Backend layout (`backend/`):**
 - `app/models/` — SQLModel table definitions: `Currency`, `Institution`, `Account`, `AccountTag`, `Balance`, `ExchangeRate`
 - `app/routers/` — One file per resource, registered in `main.py`
 - `app/db.py` — Engine, `init_db()`, and `get_session()` dependency
@@ -63,4 +76,17 @@ just db-seed      # Populate sample data
 - Cascade-delete endpoints require `?confirm=true` and return a preview without it
 
 **API docs:** `http://localhost:8000/docs` (Swagger) and `/redoc` when the dev server is running.
+
+### Frontend (`frontend/`)
+
+**Stack:** TypeScript, Vite, React 18, React Router v6, TanStack Query, Tailwind CSS, shadcn/ui, Prettier, ESLint.
+
+- `src/main.tsx` — Entry point; mounts `<App>` wrapped in `QueryClientProvider`
+- `src/App.tsx` — Route definitions (`createBrowserRouter`)
+- `src/components/` — Shared layout (`AppLayout`, `Sidebar`) and reusable components
+- `src/pages/` — One file per route (e.g. `DashboardPage.tsx`, `AccountsPage.tsx`)
+- `src/api/` — Thin `fetch` wrapper (`client.ts`) and per-resource query functions
+- `vite.config.ts` — Proxies `/api/*` → `http://localhost:8000` in dev
+
+**Routes:** `/dashboard` (default), `/currencies`, `/tags`, `/institutions`, `/accounts`, `/balances`, `/reports`, `/import-export`
 
