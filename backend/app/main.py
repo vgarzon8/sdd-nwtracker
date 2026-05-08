@@ -19,6 +19,7 @@ from app.routers import (
     exchange_rates,
     health,
     institutions,
+    reports,
     tags,
 )
 
@@ -64,3 +65,4 @@ app.include_router(institutions.router)
 app.include_router(accounts.router)
 app.include_router(balances.router)
 app.include_router(exchange_rates.router)
+app.include_router(reports.router)
