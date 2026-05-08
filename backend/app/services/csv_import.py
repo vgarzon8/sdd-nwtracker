@@ -265,9 +265,7 @@ def import_from_zip(zip_bytes: bytes, session: Session) -> ImportResult:
 
     # 5. Balances
     acct_id_map: dict[str, int] = {
-        a.name: a.id
-        for a in session.exec(select(Account)).all()
-        if a.id is not None
+        a.name: a.id for a in session.exec(select(Account)).all() if a.id is not None
     }
 
     b_ins = b_upd = 0

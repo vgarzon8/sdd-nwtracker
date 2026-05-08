@@ -15,8 +15,8 @@ from app.config import (
 from app.routers import (
     accounts,
     balances,
-    currencies,
     csv_io,
+    currencies,
     exchange_rates,
     health,
     institutions,
