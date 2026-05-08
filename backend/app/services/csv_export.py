@@ -63,9 +63,7 @@ def _accounts_csv(session: Session) -> str:
         if i.id is not None
     }
     tags_by_id: dict[int, str] = {
-        t.id: t.name
-        for t in session.exec(select(Tag)).all()
-        if t.id is not None
+        t.id: t.name for t in session.exec(select(Tag)).all() if t.id is not None
     }
 
     account_tags = session.exec(select(AccountTag)).all()
@@ -98,17 +96,12 @@ def _accounts_csv(session: Session) -> str:
 
 def _balances_csv(session: Session) -> str:
     acct_by_id: dict[int, str] = {
-        a.id: a.name
-        for a in session.exec(select(Account)).all()
-        if a.id is not None
+        a.id: a.name for a in session.exec(select(Account)).all() if a.id is not None
     }
     balances = session.exec(select(Balance)).all()
     return _write_csv(
         ["account_name", "month", "amount"],
-        [
-            [acct_by_id.get(b.account_id, ""), b.month, str(b.amount)]
-            for b in balances
-        ],
+        [[acct_by_id.get(b.account_id, ""), b.month, str(b.amount)] for b in balances],
     )
 
 
