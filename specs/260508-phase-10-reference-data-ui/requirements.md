@@ -24,17 +24,14 @@ Three existing placeholder pages become fully functional:
 | Field | Type | Notes |
 |-------|------|-------|
 | id | integer | PK, auto-assigned |
-| name | string | Required |
-| description | string | Optional |
+| name | string | Required; must be unique |
 
-**Institutions** — fully editable; delete cascades to accounts.
+**Institutions** — fully editable; delete cascades to accounts (and their balances).
 
 | Field | Type | Notes |
 |-------|------|-------|
 | id | integer | PK, auto-assigned |
-| name | string | Required |
-| country | string | Optional |
-| notes | string | Optional |
+| name | string | Required; must be unique |
 
 All three list views include a **client-side text filter** (searches across all visible string columns).
 
@@ -60,9 +57,9 @@ For Tags and Currencies, a brief inline confirmation is shown before the DELETE 
 
 ### Institutions: cascade delete with preview
 The institution delete flow uses the two-step backend protocol:
-1. `DELETE /institutions/{id}` (without `?confirm=true`) — returns a preview showing how many accounts would be deleted.
-2. User sees the count in the confirmation dialog.
-3. On confirm, `DELETE /institutions/{id}?confirm=true` — executes the delete.
+1. `DELETE /institutions/{id}` (without `?confirm=true`) — returns `{ accounts_to_delete, balances_to_delete }`.
+2. User sees the counts in the confirmation dialog.
+3. On confirm, `DELETE /institutions/{id}?confirm=true` — executes the delete (returns 204).
 
 ### Data fetching
 TanStack Query (`useQuery` / `useMutation`) for all server state. Mutations call `queryClient.invalidateQueries` on success to refresh the list.
@@ -81,7 +78,7 @@ Short, human-readable copy. Avoid jargon. Use plain action verbs: "Add", "Save",
   - Example: `"No currencies yet."` with an **Add currency** button.
 - **Delete confirmations:** name what will be deleted.
   - Tag: `"Delete tag "Budget"? This cannot be undone."`
-  - Institution cascade: `"Deleting "Chase" will also delete 3 account(s). This cannot be undone."`
+  - Institution cascade: `"Deleting "Chase" will also delete 3 account(s) and their balances. This cannot be undone."`
 - **Form validation errors:** brief inline message below the field, e.g. `"Code is required."` (rely on HTML5 `required` and display server 422 errors inline).
 - **Mutation errors:** surface via a toast or inline banner — pick whichever shadcn/ui pattern is simpler to add without a new dependency. An inline error message below the form is acceptable.
 

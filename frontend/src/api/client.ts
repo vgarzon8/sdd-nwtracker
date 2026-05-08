@@ -23,4 +23,6 @@ export const client = {
   post: <T>(path: string, body: unknown) => request<T>("POST", path, body),
   put: <T>(path: string, body: unknown) => request<T>("PUT", path, body),
   del: (path: string) => request<void>("DELETE", path),
+  // DELETE that returns a JSON body (e.g. cascade-preview endpoints)
+  del_json: <T>(path: string) => request<T>("DELETE", path),
 };

@@ -17,15 +17,15 @@ Add TypeScript types and query/mutation functions for each resource. No UI yet.
    - `deleteCurrency(code)` → `DELETE /currencies/{code}`
 
 2. Create `src/api/tags.ts`
-   - Type: `Tag { id: number; name: string; description: string | null }`
+   - Type: `Tag { id: number; name: string }`
    - `listTags()` → `GET /tags`
    - `createTag(body)` → `POST /tags`
    - `updateTag(id, body)` → `PUT /tags/{id}`
    - `deleteTag(id)` → `DELETE /tags/{id}`
 
 3. Create `src/api/institutions.ts`
-   - Type: `Institution { id: number; name: string; country: string | null; notes: string | null }`
-   - Type: `InstitutionDeletePreview { account_count: number }` (shape returned by DELETE without `?confirm=true`)
+   - Type: `Institution { id: number; name: string }`
+   - Type: `InstitutionDeletePreview { accounts_to_delete: number; balances_to_delete: number }`
    - `listInstitutions()` → `GET /institutions`
    - `createInstitution(body)` → `POST /institutions`
    - `updateInstitution(id, body)` → `PUT /institutions/{id}`
@@ -53,10 +53,10 @@ Replace the `CurrenciesPage` placeholder.
 Replace the `TagsPage` placeholder.
 
 5. Build `TagsPage.tsx`
-   - `useQuery` + `Table` (Name, Description, Actions)
-   - Client-side text filter (name or description)
+   - `useQuery` + `Table` (Name, Actions)
+   - Client-side text filter (name)
    - Empty state
-   - **Add tag** button → `Dialog` with Name + Description fields
+   - **Add tag** button → `Dialog` with Name field
    - Edit (pencil icon) per row → same `Dialog` pre-populated
    - `useMutation` for create and update; both invalidate `['tags']`
    - Delete per row → `AlertDialog` showing tag name → `useMutation`
@@ -68,15 +68,15 @@ Replace the `TagsPage` placeholder.
 Replace the `InstitutionsPage` placeholder.
 
 6. Build `InstitutionsPage.tsx`
-   - `useQuery` + `Table` (Name, Country, Notes, Actions)
-   - Client-side text filter (name, country, or notes)
+   - `useQuery` + `Table` (Name, Actions)
+   - Client-side text filter (name)
    - Empty state
-   - **Add institution** button → `Dialog` with Name, Country, Notes fields
+   - **Add institution** button → `Dialog` with Name field
    - Edit per row → same `Dialog` pre-populated
    - `useMutation` for create and update; both invalidate `['institutions']`
    - Delete per row → two-step cascade flow:
-     a. Call `deleteInstitutionPreview(id)` to get account count
-     b. Show `AlertDialog` with count in the message
+     a. Call `deleteInstitutionPreview(id)` to get `accounts_to_delete` and `balances_to_delete`
+     b. Show `AlertDialog` with both counts in the message
      c. On confirm, call `deleteInstitutionConfirm(id)` and invalidate `['institutions']`
 
 ---
