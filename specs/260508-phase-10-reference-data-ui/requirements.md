@@ -65,7 +65,7 @@ The institution delete flow uses the two-step backend protocol:
 TanStack Query (`useQuery` / `useMutation`) for all server state. Mutations call `queryClient.invalidateQueries` on success to refresh the list.
 
 ### shadcn/ui components to use
-`Table`, `Dialog`, `AlertDialog`, `Button`, `Input`, `Label`, `Badge` (for currency codes). These are already available via the phase-9 scaffold.
+`Table`, `Dialog`, `AlertDialog`, `Button`, `Input`, `Label`, `Badge` (for currency codes). These were added via `npx shadcn@latest add` in this phase (Radix UI dependencies installed to `frontend/package.json`).
 
 ---
 
@@ -78,7 +78,7 @@ Short, human-readable copy. Avoid jargon. Use plain action verbs: "Add", "Save",
   - Example: `"No currencies yet."` with an **Add currency** button.
 - **Delete confirmations:** name what will be deleted.
   - Tag: `"Delete tag "Budget"? This cannot be undone."`
-  - Institution cascade: `"Deleting "Chase" will also delete 3 account(s) and their balances. This cannot be undone."`
+  - Institution cascade: `"This will also delete 3 account(s) and 12 balance(s). This cannot be undone."`
 - **Form validation errors:** brief inline message below the field, e.g. `"Code is required."` (rely on HTML5 `required` and display server 422 errors inline).
 - **Mutation errors:** surface via a toast or inline banner — pick whichever shadcn/ui pattern is simpler to add without a new dependency. An inline error message below the form is acceptable.
 

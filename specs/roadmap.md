@@ -118,7 +118,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 10 — Reference Data UI (Currencies, Tags, Institutions) [ ]
+## Phase 10 — Reference Data UI (Currencies, Tags, Institutions) [X]
 
 **Deliverable:** List and CRUD forms for currencies, tags, and institutions.
 
