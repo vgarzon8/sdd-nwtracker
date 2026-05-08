@@ -16,6 +16,7 @@ from app.routers import (
     accounts,
     balances,
     currencies,
+    csv_io,
     exchange_rates,
     health,
     institutions,
@@ -66,3 +67,4 @@ app.include_router(accounts.router)
 app.include_router(balances.router)
 app.include_router(exchange_rates.router)
 app.include_router(reports.router)
+app.include_router(csv_io.router)
