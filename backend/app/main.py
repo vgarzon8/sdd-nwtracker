@@ -47,6 +47,7 @@ _stream_handler.setFormatter(_fmt)
 logging.basicConfig(
     level=LOG_LEVEL,
     handlers=[_file_handler, _stream_handler],
+    force=True,  # uvicorn pre-configures root logger; force=True replaces its handlers
 )
 
 # ---------------------------------------------------------------------------
