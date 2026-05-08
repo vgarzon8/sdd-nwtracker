@@ -104,16 +104,17 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 9 — Frontend Scaffold [ ]
+## Phase 9 — Frontend Scaffold [X]
 
 **Deliverable:** React app running in dev with routing and API client wired up to the backend.
 
 - Initialize Vite + React + TypeScript project under `frontend/`
-- Install and configure Tailwind CSS and shadcn/ui
-- Install React Router v6 and TanStack Query
+- Install and configure Tailwind CSS v4 and shadcn/ui
+- Install React Router v7 and TanStack Query
 - Set up Vite proxy to forward `/api/*` to FastAPI dev server
 - Define route structure (placeholder pages for each section)
 - Shared layout: sidebar navigation, header
+- ESLint + Prettier configured; `just frontend-*` recipes added to justfile
 
 ---
 

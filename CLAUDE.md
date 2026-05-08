@@ -79,7 +79,7 @@ just frontend-format     # Prettier --write src/
 
 ### Frontend (`frontend/`)
 
-**Stack:** TypeScript, Vite, React 18, React Router v6, TanStack Query, Tailwind CSS, shadcn/ui, Prettier, ESLint.
+**Stack:** TypeScript, Vite, React 19, React Router v7, TanStack Query, Tailwind CSS v4, shadcn/ui, Prettier, ESLint.
 
 - `src/main.tsx` — Entry point; mounts `<App>` wrapped in `QueryClientProvider`
 - `src/App.tsx` — Route definitions (`createBrowserRouter`)
