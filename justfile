@@ -1,4 +1,5 @@
 backend := "backend"
+frontend := "frontend"
 
 db-init:
     uv run --project {{backend}} db-init
@@ -6,7 +7,7 @@ db-init:
 db-seed:
     uv run --project {{backend}} db-seed
 
-check: test lint typecheck
+check: test lint typecheck frontend-lint frontend-typecheck
 
 test:
     uv run --project {{backend}} pytest
@@ -23,3 +24,18 @@ typecheck:
 
 dev:
     uv run --project {{backend}} uvicorn app.main:app --reload --app-dir {{backend}}
+
+frontend-install:
+    cd {{frontend}} && npm install
+
+frontend-dev:
+    cd {{frontend}} && npm run dev
+
+frontend-lint:
+    cd {{frontend}} && npm run lint
+
+frontend-typecheck:
+    cd {{frontend}} && npx tsc --noEmit
+
+frontend-format:
+    cd {{frontend}} && npm run format
