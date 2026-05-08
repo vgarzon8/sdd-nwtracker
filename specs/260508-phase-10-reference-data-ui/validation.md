@@ -26,22 +26,22 @@ Start both servers (`just dev` and `just frontend-dev`) and exercise each page.
 ### Tags (`/tags`)
 
 - [ ] Page loads and displays existing tags
-- [ ] Client-side filter works across name and description
+- [ ] Client-side filter works on name
 - [ ] **Add tag** dialog: submitting creates a new tag; it appears in the list
-- [ ] **Edit** (pencil icon): dialog pre-populates with current name and description; saving updates the row in place
+- [ ] **Edit** (pencil icon): dialog pre-populates with current name; saving updates the row in place
 - [ ] Delete confirmation dialog names the tag; confirming removes it
 
 ### Institutions (`/institutions`)
 
 - [ ] Page loads and displays existing institutions
-- [ ] Client-side filter works across name, country, and notes columns
-- [ ] **Add institution** dialog: all three optional fields (country, notes) can be left blank
-- [ ] **Edit**: dialog pre-populates; saving updates the row
+- [ ] Client-side filter works on name
+- [ ] **Add institution** dialog: submitting with a valid name creates the institution
+- [ ] **Edit**: dialog pre-populates with current name; saving updates the row
 - [ ] Delete — institution with **no accounts**:
-  - [ ] Confirmation dialog shows `0 account(s)` will be deleted (or equivalent clear phrasing)
+  - [ ] Confirmation dialog shows `0 account(s) and 0 balance(s)` will be deleted
   - [ ] Confirming deletes the institution
 - [ ] Delete — institution with **linked accounts**:
-  - [ ] Confirmation dialog shows the correct account count
+  - [ ] Confirmation dialog shows the correct account and balance counts
   - [ ] Confirming deletes the institution and its accounts (verify via Accounts page or API)
   - [ ] Cancelling leaves everything intact
 
