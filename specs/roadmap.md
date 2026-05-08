@@ -76,13 +76,19 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 7 — Reports API [ ]
+## Phase 7 — Reports API [X]
 
-**Deliverable:** Net worth snapshot report endpoint.
+**Deliverable:** Generic balance aggregation endpoints — group balances by any account attribute, converted to USD.
 
-- `GET /reports/net-worth?month=YYYY-MM`
-  - Returns: total assets, total liabilities, net worth (all in base currency USD)
-  - Per-account detail with currency, original amount, and USD-equivalent
+- `GET /reports/balance-summary?attribute=<attr>&month=YYYY-MM`
+  - `attribute` is one of: `side`, `currency`, `institution`, `tags`
+  - Returns `[{group_key, balance_sum_usd}]` — all amounts in USD
+  - Net worth = difference between `side=asset` and `side=liability` items (presentation-layer concern)
+  - 422 if any non-USD account is missing an exchange rate for the requested month
+- `GET /reports/balance-summary/history?attribute=<attr>&from=YYYY-MM&to=YYYY-MM`
+  - Same aggregation over a range of months; `to` defaults to most recent month with data
+  - Returns `[{month, group_key, balance_sum_usd}]` — same shape with `month` added
+  - Months with no balance data are silently omitted; 422 if any rate is missing in the range
 - Integration tests
 
 ---
