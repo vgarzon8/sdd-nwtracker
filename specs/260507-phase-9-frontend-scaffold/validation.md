@@ -2,11 +2,11 @@
 
 ## Automated
 
-- [ ] `just frontend-typecheck` exits 0 (`tsc --noEmit`, strict mode)
-- [ ] `just frontend-lint` exits 0 (no ESLint errors or warnings)
-- [ ] `cd frontend && npm run format:check` exits 0 (Prettier reports no formatting issues)
-- [ ] `cd frontend && npm run build` exits 0 (production build succeeds)
-- [ ] `just check` exits 0 (backend + frontend lint and typecheck all pass)
+- [x] `just frontend-typecheck` exits 0 (`tsc --noEmit`, strict mode)
+- [x] `just frontend-lint` exits 0 (no ESLint errors or warnings)
+- [x] `cd frontend && npm run format:check` exits 0 (Prettier reports no formatting issues)
+- [x] `cd frontend && npm run build` exits 0 (production build succeeds)
+- [x] `just check` exits 0 (backend + frontend lint and typecheck all pass)
 
 ## Manual Walkthrough
 

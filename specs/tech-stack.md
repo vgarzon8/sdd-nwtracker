@@ -19,8 +19,8 @@
 |--------------------|-------------------------|-----------------------------------------------------------------------|
 | Language           | TypeScript              |                                                                       |
 | Build tool         | Vite                    | Fast dev server and build; proxies API calls to FastAPI in dev        |
-| UI framework       | React 18+               |                                                                       |
-| Routing            | React Router v6         |                                                                       |
+| UI framework       | React 19                |                                                                       |
+| Routing            | React Router v7         |                                                                       |
 | Styling            | Tailwind CSS            | Utility-first; no custom CSS files except global resets               |
 | Component library  | shadcn/ui               | Accessible, unstyled components built on Radix UI + Tailwind          |
 | Data fetching      | TanStack Query (React Query) | Server state management; handles caching and invalidation        |

@@ -12,8 +12,8 @@ Initialize a React frontend project under `frontend/` wired to the existing Fast
 |------|--------|
 | Build tool | Vite |
 | Language | TypeScript (strict) |
-| UI framework | React 18+ |
-| Routing | React Router v6 |
+| UI framework | React 19 |
+| Routing | React Router v7 |
 | Styling | Tailwind CSS |
 | Components | shadcn/ui (default theme, no customization) |
 | Server state | TanStack Query (QueryClient provider at root) |
