@@ -2,21 +2,21 @@
 
 ## Automated
 
-- [ ] `just check` passes (tests, lint, typecheck all green)
-- [ ] `GET /export` returns 200 with `Content-Type: application/zip`
-- [ ] Exported ZIP contains exactly: `currencies.csv`, `tags.csv`, `institutions.csv`, `accounts.csv`, `balances.csv`, `exchange_rates.csv`
-- [ ] Each exported CSV has the correct header row per `specs/csv-format.md`
-- [ ] Full export → wipe → import round-trip restores all rows in all tables
-- [ ] Tag associations are preserved in the round-trip (multi-tag account restores all `account_tag` rows)
-- [ ] Importing the same ZIP twice is idempotent: second run returns `inserted: 0` for all tables
-- [ ] Importing a ZIP with a changed balance amount upserts the row with the new amount
-- [ ] Missing CSV file in ZIP → 422 listing the missing filename
-- [ ] Invalid `month` format in `balances.csv` → 422
-- [ ] Invalid `side` value in `accounts.csv` → 422
-- [ ] Account references unknown `institution_name` → 422
-- [ ] Balance references unknown `account_name` → 422
-- [ ] Import with header-only CSVs (no data rows) → 200, all counts zero
-- [ ] mypy reports no errors on `app/services/csv_export.py`, `app/services/csv_import.py`, `app/routers/csv_io.py`
+- [x] `just check` passes (tests, lint, typecheck all green)
+- [x] `GET /export` returns 200 with `Content-Type: application/zip`
+- [x] Exported ZIP contains exactly: `currencies.csv`, `tags.csv`, `institutions.csv`, `accounts.csv`, `balances.csv`, `exchange_rates.csv`
+- [x] Each exported CSV has the correct header row per `specs/csv-format.md`
+- [x] Full export → wipe → import round-trip restores all rows in all tables
+- [x] Tag associations are preserved in the round-trip (multi-tag account restores all `account_tag` rows)
+- [x] Importing the same ZIP twice is idempotent: second run returns `inserted: 0` for all tables
+- [x] Importing a ZIP with a changed balance amount upserts the row with the new amount
+- [x] Missing CSV file in ZIP → 422 listing the missing filename
+- [x] Invalid `month` format in `balances.csv` → 422
+- [x] Invalid `side` value in `accounts.csv` → 422
+- [x] Account references unknown `institution_name` → 422
+- [x] Balance references unknown `account_name` → 422
+- [x] Import with header-only CSVs (no data rows) → 200, all counts zero
+- [x] mypy reports no errors on `app/services/csv_export.py`, `app/services/csv_import.py`, `app/routers/csv_io.py`
 
 ## Manual walkthrough
 

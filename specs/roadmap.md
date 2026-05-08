@@ -93,7 +93,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 8 — CSV Import & Export [ ]
+## Phase 8 — CSV Import & Export [X]
 
 **Deliverable:** Idempotent CSV import and full CSV export.
 
