@@ -21,7 +21,7 @@
 | Build tool         | Vite                    | Fast dev server and build; proxies API calls to FastAPI in dev        |
 | UI framework       | React 19                |                                                                       |
 | Routing            | React Router v7         |                                                                       |
-| Styling            | Tailwind CSS            | Utility-first; no custom CSS files except global resets               |
+| Styling            | Tailwind CSS v4         | Utility-first; integrated via `@tailwindcss/vite` plugin (no PostCSS); CSS custom properties in `src/index.css` |
 | Component library  | shadcn/ui               | Accessible, unstyled components built on Radix UI + Tailwind          |
 | Data fetching      | TanStack Query (React Query) | Server state management; handles caching and invalidation        |
 | HTTP client        | fetch                   | Thin wrapper in `src/api/`; base URL `/api`, proxied to FastAPI in dev |
@@ -111,14 +111,20 @@ nwtracker/
       ai/                 # AI assistant: provider client, tool definitions, conversation service
       db.py               # DB engine and session dependency
   frontend/
-    Dockerfile
+    Dockerfile            # (planned; not yet implemented)
     package.json
-    vite.config.ts
+    vite.config.ts        # Tailwind v4 plugin + /api proxy + @/* alias
+    eslint.config.js      # ESLint flat config with typescript-eslint + prettier
+    components.json       # shadcn/ui config
+    .prettierrc           # Prettier options
+    index.html
     src/
-      main.tsx
-      App.tsx
-      components/         # shadcn/ui and custom components
+      main.tsx            # Entry: QueryClientProvider wraps App
+      App.tsx             # createBrowserRouter route definitions
+      index.css           # Tailwind @import + shadcn CSS custom properties
+      components/         # Shared layout (AppLayout, Sidebar) and UI components
       pages/              # One file per route
-      api/                # API client functions
+      api/                # fetch wrapper (client.ts) and per-resource query fns
+      lib/                # Utilities: cn() helper (utils.ts)
   specs/                  # This directory
 ```

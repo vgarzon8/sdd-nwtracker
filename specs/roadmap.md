@@ -108,7 +108,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 **Deliverable:** React app running in dev with routing and API client wired up to the backend.
 
-- Initialize Vite + React + TypeScript project under `frontend/`
+- Initialize Vite + React 19 + TypeScript project under `frontend/`
 - Install and configure Tailwind CSS v4 and shadcn/ui
 - Install React Router v7 and TanStack Query
 - Set up Vite proxy to forward `/api/*` to FastAPI dev server
