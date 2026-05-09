@@ -154,6 +154,7 @@ export default function ExchangeRatesPage() {
 
   function commitEdit(currencyCode: string) {
     if (!editState) return;
+    if (createMutation.isPending || updateMutation.isPending) return;
     const trimmed = editState.value.trim();
 
     if (trimmed === "") {
