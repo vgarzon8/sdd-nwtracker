@@ -2,9 +2,9 @@
 
 ## Automated
 
-- [ ] `just test` passes (all backend tests green, no regressions)
-- [ ] `just frontend-typecheck` passes with no errors
-- [ ] `just frontend-lint` passes with no errors
+- [x] `just test` passes (153 passed — all backend tests green, no regressions)
+- [x] `just frontend-typecheck` passes with no errors
+- [x] `just frontend-lint` passes with no errors
 
 ---
 
