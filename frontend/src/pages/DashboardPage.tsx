@@ -260,9 +260,12 @@ export default function DashboardPage() {
   const chartPoints = useMemo(() => toChartPoints(historyData), [historyData]);
 
   const sortedTagRows = useMemo(() => {
+    if (!Array.isArray(tagSummary)) return [];
     const named = tagSummary
       .filter((t) => t.group_key !== null)
-      .sort((a, b) => (a.group_key ?? "").localeCompare(b.group_key ?? ""));
+      .sort((a, b) =>
+        String(a.group_key ?? "").localeCompare(String(b.group_key ?? "")),
+      );
     const untagged = tagSummary.filter((t) => t.group_key === null);
     return [...named, ...untagged];
   }, [tagSummary]);
