@@ -6,6 +6,7 @@ import {
   listBalancesByMonth,
   createBalance,
   updateBalance,
+  rollForward,
   type BalanceDetail,
 } from "@/api/balances";
 import { listAccounts, type Account } from "@/api/accounts";
@@ -20,6 +21,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 function currentCalendarMonth(): string {
   const now = new Date();
@@ -64,6 +73,8 @@ export default function BalancesPage() {
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
   const [editState, setEditState] = useState<EditState | null>(null);
   const [saveErrors, setSaveErrors] = useState<Record<string, string>>({});
+  const [rollForwardOpen, setRollForwardOpen] = useState(false);
+  const [rollForwardError, setRollForwardError] = useState<string | null>(null);
 
   const { data: allBalances = [] } = useQuery({
     queryKey: ["balances-months"],
@@ -100,6 +111,26 @@ export default function BalancesPage() {
     queryClient.invalidateQueries({ queryKey: ["balances", effectiveMonth] });
     queryClient.invalidateQueries({ queryKey: ["balances-months"] });
   };
+
+  const sourceMonth = useMemo(() => {
+    const prior = allBalances
+      .map((b) => b.month)
+      .filter((m) => m < effectiveMonth);
+    if (prior.length === 0) return undefined;
+    return prior.reduce((max, m) => (m > max ? m : max));
+  }, [allBalances, effectiveMonth]);
+
+  const rollForwardMutation = useMutation({
+    mutationFn: () => rollForward(effectiveMonth),
+    onSuccess: () => {
+      invalidateBalances();
+      setRollForwardOpen(false);
+      setRollForwardError(null);
+    },
+    onError: (err: Error) => {
+      setRollForwardError(err.message || "Roll-forward failed.");
+    },
+  });
 
   const createMutation = useMutation({
     mutationFn: (vars: { body: Parameters<typeof createBalance>[0]; key: string }) =>
@@ -200,7 +231,63 @@ export default function BalancesPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Balances</h1>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            disabled={!sourceMonth}
+            onClick={() => {
+              setRollForwardError(null);
+              setRollForwardOpen(true);
+            }}
+          >
+            Roll forward
+          </Button>
+        </div>
       </div>
+
+      <Dialog
+        open={rollForwardOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            setRollForwardError(null);
+            rollForwardMutation.reset();
+          }
+          setRollForwardOpen(open);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              Roll forward to {formatMonthLabel(effectiveMonth)}
+            </DialogTitle>
+            <DialogDescription>
+              {sourceMonth
+                ? `Copies ${formatMonthLabel(sourceMonth)} balances for ${
+                    rows.filter((r) => r.balance === null).length
+                  } active account(s) with no ${formatMonthLabel(effectiveMonth)} entry.`
+                : "No prior month with data found."}
+            </DialogDescription>
+          </DialogHeader>
+          {rollForwardError && (
+            <p className="text-sm text-destructive">{rollForwardError}</p>
+          )}
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setRollForwardOpen(false)}
+              disabled={rollForwardMutation.isPending}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => rollForwardMutation.mutate()}
+              disabled={rollForwardMutation.isPending || !sourceMonth}
+            >
+              {rollForwardMutation.isPending ? "Rolling forward…" : "Confirm"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Month selector */}
       <div className="flex items-center gap-2">
