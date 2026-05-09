@@ -128,7 +128,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 11 — Accounts UI [ ]
+## Phase 11 — Accounts UI [X]
 
 **Deliverable:** Account list and CRUD forms.
 

@@ -72,7 +72,7 @@ const emptyForm = (): FormState => ({
   institution_id: "",
   currency_code: "",
   side: "",
-  status: "active",
+  status: "active" as AccountStatus,
   tag_ids: [],
 });
 
@@ -85,8 +85,8 @@ interface FieldErrors {
 
 export default function AccountsPage() {
   const queryClient = useQueryClient();
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [tagFilter, setTagFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<AccountStatus | "all">("all");
+  const [tagFilter, setTagFilter] = useState<string | "all">("all");
   const [formOpen, setFormOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Account | null>(null);
   const [deleteState, setDeleteState] = useState<DeleteState | null>(null);
@@ -245,14 +245,14 @@ export default function AccountsPage() {
       </div>
 
       <div className="flex items-center gap-3">
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
+        <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as AccountStatus | "all")}>
           <SelectTrigger className="w-36">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All statuses</SelectItem>
             <SelectItem value="active">Active</SelectItem>
-            <SelectItem value="inactive">Inactive</SelectItem>
+            <SelectItem value="closed">Closed</SelectItem>
           </SelectContent>
         </Select>
 
@@ -300,7 +300,7 @@ export default function AccountsPage() {
             {filtered.map((account) => (
               <TableRow
                 key={account.id}
-                className={account.status === "inactive" ? "opacity-50" : ""}
+                className={account.status === "closed" ? "opacity-50" : ""}
               >
                 <TableCell>{account.name}</TableCell>
                 <TableCell>{institutionName(account.institution_id)}</TableCell>
@@ -437,7 +437,7 @@ export default function AccountsPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
+                  <SelectItem value="closed">Closed</SelectItem>
                 </SelectContent>
               </Select>
             </div>

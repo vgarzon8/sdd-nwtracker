@@ -1,7 +1,7 @@
 import { client } from "./client";
 
 export type AccountSide = "asset" | "liability";
-export type AccountStatus = "active" | "inactive";
+export type AccountStatus = "active" | "closed";
 
 export interface Account {
   id: number;
