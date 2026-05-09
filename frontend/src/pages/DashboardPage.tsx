@@ -19,8 +19,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  LineChart,
-  Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   Tooltip,
@@ -348,7 +348,7 @@ export default function DashboardPage() {
           </div>
         ) : (
           <ResponsiveContainer width="100%" height={220}>
-            <LineChart data={chartPoints} margin={{ top: 4, right: 16, bottom: 0, left: 8 }}>
+            <BarChart data={chartPoints} margin={{ top: 4, right: 16, bottom: 0, left: 8 }}>
               <XAxis
                 dataKey="label"
                 tick={{ fontSize: 12 }}
@@ -366,15 +366,12 @@ export default function DashboardPage() {
                 formatter={(value: number) => [formatUsd(value), "Net Worth"]}
                 labelFormatter={(label) => label}
               />
-              <Line
-                type="monotone"
+              <Bar
                 dataKey="netWorth"
-                stroke="hsl(var(--foreground))"
-                strokeWidth={2}
-                dot={false}
-                activeDot={{ r: 4 }}
+                fill="hsl(var(--foreground))"
+                radius={[3, 3, 0, 0]}
               />
-            </LineChart>
+            </BarChart>
           </ResponsiveContainer>
         )}
       </div>
