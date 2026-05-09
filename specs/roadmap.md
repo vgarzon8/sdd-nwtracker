@@ -169,7 +169,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 14 — Import / Export UI [ ]
+## Phase 14 — Import / Export UI [X]
 
 **Deliverable:** CSV import and export accessible from the browser.
 
