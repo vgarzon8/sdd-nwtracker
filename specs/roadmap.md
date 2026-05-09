@@ -149,7 +149,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 12b — Roll-Forward & Transfer [ ]
+## Phase 12b — Roll-Forward & Transfer [X]
 
 **Deliverable:** Bulk balance operations built on top of the Phase 12 balance list.
 
