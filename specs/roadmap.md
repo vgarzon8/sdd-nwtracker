@@ -138,15 +138,23 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 12 — Balance Entry UI [ ]
+## Phase 12 — Balance Entry UI [X]
 
-**Deliverable:** Monthly balance entry and roll-forward workflow.
+**Deliverable:** Monthly balance entry — view and edit account balances for any month.
 
-- Month selector
-- Balance list for selected month: account name, institution, balance, currency
-- Inline edit for individual balance amounts
-- Roll-forward action: copy previous month to current month
-- Transfer form between two accounts
+- Month selector (defaults to most recent month with data)
+- Balance list for selected month: account name, institution, balance, currency, side
+- Shows all active accounts; accounts with no entry for the month display `—`
+- Click-to-edit inline amount: Enter or blur saves, Escape cancels; creates a new balance if none exists
+
+---
+
+## Phase 12b — Roll-Forward & Transfer [ ]
+
+**Deliverable:** Bulk balance operations built on top of the Phase 12 balance list.
+
+- Roll-forward action: copy previous month's balances to the selected month for all active accounts
+- Transfer form: apply a transfer between two accounts for the selected month
 
 ---
 
