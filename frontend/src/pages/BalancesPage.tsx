@@ -27,7 +27,8 @@ function currentCalendarMonth(): string {
 }
 
 function formatMonthLabel(month: string): string {
-  return new Date(`${month}-01`).toLocaleDateString("en-US", {
+  const [y, m] = month.split("-").map(Number);
+  return new Date(y, m - 1, 1).toLocaleDateString("en-US", {
     month: "short",
     year: "numeric",
   });
