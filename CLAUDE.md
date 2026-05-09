@@ -55,7 +55,7 @@ just frontend-format     # Prettier --write src/
 
 ## Architecture
 
-**nwtracker** is a local-first personal net worth tracker. Backend complete (phases 1–8); frontend scaffolded in phase 9.
+**nwtracker** is a local-first personal net worth tracker. Backend complete (phases 1–8); frontend through phase 12 (reference data, accounts, and balance entry UIs complete).
 
 ### Backend (`backend/`)
 
