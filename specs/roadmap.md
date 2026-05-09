@@ -158,7 +158,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 13 — Reports UI [ ]
+## Phase 13 — Reports UI [X]
 
 **Deliverable:** Net worth dashboard.
 
