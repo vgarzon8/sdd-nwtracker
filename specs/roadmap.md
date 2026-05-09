@@ -178,7 +178,30 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 15 — AI Foundation [ ]
+## Phase 15 — Exchange Rates UI [ ]
+
+**Deliverable:** Exchange rate list and CRUD, organized by month with inline editing.
+
+- Month selector (defaults to most recent month with data, matching the Balance Entry convention)
+- List all currencies with their exchange rate for the selected month; accounts with no rate for that month show `—`
+- Click-to-edit inline rate: Enter or blur saves, Escape cancels; creates a new rate if none exists for that currency/month
+- Delete rate for a currency/month (with confirmation)
+- Navigation sidebar entry wired up
+
+---
+
+## Phase 16 — Dashboard [ ]
+
+**Deliverable:** Populated dashboard with net worth snapshot, history chart, and tag breakdown.
+
+- **Current month** = most recent month with balance data (same convention as Balance Entry and Reports)
+- **Summary cards:** three cards — Total Assets, Total Liabilities, Net Worth — each showing the USD value and a delta vs. the prior month (e.g., +$1,200)
+- **Net worth history chart:** line chart of net worth over time; defaults to trailing 12 months; user can switch between 6 months, 12 months, and all available data via a range picker
+- **Balances by tag table:** table showing each tag with its total balance in USD for the current month; accounts with no tag are grouped under "Untagged"
+
+---
+
+## Phase 17 — AI Foundation [ ]
 
 **Deliverable:** Configurable AI provider wired into the backend; tool framework in place; no UI yet.
 
@@ -191,7 +214,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 16 — AI Write Tools & Confirmation Flow [ ]
+## Phase 18 — AI Write Tools & Confirmation Flow [ ]
 
 **Deliverable:** Assistant can propose data changes; backend returns structured diffs for user confirmation.
 
@@ -203,7 +226,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 17 — Chat Assistant UI [ ]
+## Phase 19 — Chat Assistant UI [ ]
 
 **Deliverable:** Persistent chat panel in the frontend; user can converse with the assistant.
 
@@ -215,7 +238,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 18 — Anomaly & Trend Alerts [ ]
+## Phase 20 — Anomaly & Trend Alerts [ ]
 
 **Deliverable:** AI scans each month's balances and surfaces notable changes.
 
@@ -227,7 +250,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 19 — Monthly Narrative Report [ ]
+## Phase 21 — Monthly Narrative Report [ ]
 
 **Deliverable:** AI generates a written summary of the month's financial picture.
 
@@ -238,7 +261,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 20 — Smart CSV Import Assistance [ ]
+## Phase 22 — Smart CSV Import Assistance [ ]
 
 **Deliverable:** AI helps the user map and clean CSV data during import.
 
