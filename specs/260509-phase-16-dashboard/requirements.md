@@ -31,10 +31,15 @@
 | Delta display | Signed integer with `+`/`−` prefix and color (green/red) | Clear at a glance; consistent with financial dashboard conventions |
 | Missing rates | Inline warning banner; cards show `—` | Actionable: tells the user exactly what is missing and links to the fix |
 | Chart library | Recharts | Lightweight, React-native, widely used; no other chart library already present |
+| History chart type | Bar chart (`BarChart`/`Bar`) | User preference: bars are always visible; line chart with `dot={false}` only showed a marker on hover |
 | History range | 12 months default; presets 6m / 12m / All | Trailing 12 months is the most useful default for monthly financial tracking |
 | "All" range | `from` = `"2000-01"` sentinel | The history endpoint silently omits months with no data, so a far-past from date is safe |
 | Tag breakdown data | `GET /reports/balance-summary?attribute=tags&month=YYYY-MM` | Direct API support; returns `null` group_key for untagged accounts |
 | Null group_key | Displayed as "Untagged" | User-friendly label for accounts with no assigned tag |
+| `balance_sum_usd` coercion | Wrap in `Number()` before arithmetic and display | Pydantic v2 can serialize numeric fields as strings in some model configurations; `Number()` is safe even when the value is already a number |
+| `group_key` type | `string \| number \| null` (not `string \| null`) | Actual backend model is `str \| int \| None`; integer tag IDs can appear; always use `String(group_key)` before string methods like `localeCompare` |
+| History response shape | Wrapper object: `{from_month, to_month, items: BalanceSummaryHistoryItem[]}` | Actual backend response wraps items; spec said "plain array" but implementation uses a named wrapper — always read the router source, not just the spec |
+| TanStack Query array default | Use `response?.items ?? []` not `data = []` destructuring default | TanStack Query can return `null` (not `undefined`) in some states, bypassing the `= []` default; also apply `Array.isArray` guard before iterating any API-returned array |
 
 ---
 

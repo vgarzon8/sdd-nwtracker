@@ -35,6 +35,8 @@
 | Rate precision | Decimal input (up to 4 places) | Backend stores `Numeric(10,4)`; display rounds to 4 places |
 | Delete flow | Confirm dialog | Destructive action; low risk but consistent with other delete patterns in the app |
 | Rate validation | Must be a positive number | Backend enforces this; frontend validates before submit to give immediate feedback |
+| `rate` display | `Number(existing.rate).toFixed(4)` | Pydantic v2 serializes `Decimal` fields as JSON strings, not numbers; `toFixed` would throw without coercion |
+| Commit-on-blur double-fire | Guard `commitEdit` with `if (createMutation.isPending \|\| updateMutation.isPending) return` | Setting `disabled={isPending}` on a focused `<Input>` triggers `onBlur` in browsers, which fires `commitEdit` a second time while the first POST is still in flight — the duplicate request gets a 409 and shows "Failed to save" |
 
 ---
 
@@ -50,4 +52,5 @@
 - **Existing API file**: `src/api/exchange-rates.ts` already has `listExchangeRates(month)` and the `ExchangeRate` interface — extend it, don't replace it
 - **Month default**: derive from the `["balances-months"]` query (same as BalancesPage) — `listBalancesFlat` from `src/api/balances.ts`
 - **Inline edit pattern**: follow `BalancesPage.tsx` exactly — `editState: { key: string; value: string } | null`, controlled `Input`, `onBlur` commits, `onKeyDown` handles Enter/Escape, `autoFocus`
+- **Pydantic Decimal serialization**: this backend serializes `Decimal` fields (e.g., `ExchangeRate.rate`) as JSON strings. Always wrap in `Number()` before arithmetic, `.toFixed()`, or comparison. Use `Number(a) === Number(b)` for unchanged-value checks.
 - **No copy-style constraints**: labels should be plain and functional
