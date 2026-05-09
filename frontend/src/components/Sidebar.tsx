@@ -21,6 +21,7 @@ const NAV_GROUPS: NavGroup[] = [
       { to: "/currencies", label: "Currencies" },
       { to: "/tags", label: "Tags" },
       { to: "/institutions", label: "Institutions" },
+      { to: "/exchange-rates", label: "Exchange Rates" },
     ],
   },
   {

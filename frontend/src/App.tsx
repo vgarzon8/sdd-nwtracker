@@ -8,6 +8,7 @@ import AccountsPage from "@/pages/AccountsPage";
 import BalancesPage from "@/pages/BalancesPage";
 import ReportsPage from "@/pages/ReportsPage";
 import ImportExportPage from "@/pages/ImportExportPage";
+import ExchangeRatesPage from "@/pages/ExchangeRatesPage";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,7 @@ const router = createBrowserRouter([
       { path: "/currencies", element: <CurrenciesPage /> },
       { path: "/tags", element: <TagsPage /> },
       { path: "/institutions", element: <InstitutionsPage /> },
+      { path: "/exchange-rates", element: <ExchangeRatesPage /> },
       { path: "/accounts", element: <AccountsPage /> },
       { path: "/balances", element: <BalancesPage /> },
       { path: "/reports", element: <ReportsPage /> },
