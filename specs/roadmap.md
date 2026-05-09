@@ -190,7 +190,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 16 — Dashboard [ ]
+## Phase 16 — Dashboard [X]
 
 **Deliverable:** Populated dashboard with net worth snapshot, history chart, and tag breakdown.
 
