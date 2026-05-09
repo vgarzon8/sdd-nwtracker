@@ -178,7 +178,7 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
-## Phase 15 — Exchange Rates UI [ ]
+## Phase 15 — Exchange Rates UI [X]
 
 **Deliverable:** Exchange rate list and CRUD, organized by month with inline editing.
 
