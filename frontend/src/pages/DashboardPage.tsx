@@ -128,13 +128,14 @@ interface ChartPoint {
 }
 
 function toChartPoints(items: BalanceSummaryHistoryItem[]): ChartPoint[] {
+  if (!Array.isArray(items)) return [];
   const byMonth = new Map<string, { asset: number; liability: number }>();
   for (const item of items) {
     if (!byMonth.has(item.month))
       byMonth.set(item.month, { asset: 0, liability: 0 });
     const entry = byMonth.get(item.month)!;
-    if (item.group_key === "asset") entry.asset = item.balance_sum_usd;
-    if (item.group_key === "liability") entry.liability = item.balance_sum_usd;
+    if (item.group_key === "asset") entry.asset = Number(item.balance_sum_usd);
+    if (item.group_key === "liability") entry.liability = Number(item.balance_sum_usd);
   }
   return Array.from(byMonth.entries())
     .sort(([a], [b]) => a.localeCompare(b))
@@ -217,19 +218,27 @@ export default function DashboardPage() {
   const summaryLoading = currentLoading || priorLoading;
   const summaryError = !summaryMissing422 && !!currentError;
 
-  const currentAssets =
-    currentSummary.find((s) => s.group_key === "asset")?.balance_sum_usd ?? null;
-  const currentLiabilities =
-    currentSummary.find((s) => s.group_key === "liability")?.balance_sum_usd ?? null;
+  const currentAssets = (() => {
+    const raw = currentSummary.find((s) => s.group_key === "asset")?.balance_sum_usd;
+    return raw !== undefined ? Number(raw) : null;
+  })();
+  const currentLiabilities = (() => {
+    const raw = currentSummary.find((s) => s.group_key === "liability")?.balance_sum_usd;
+    return raw !== undefined ? Number(raw) : null;
+  })();
   const currentNetWorth =
     currentAssets !== null && currentLiabilities !== null
       ? currentAssets - currentLiabilities
       : null;
 
-  const priorAssets =
-    priorSummary.find((s) => s.group_key === "asset")?.balance_sum_usd ?? null;
-  const priorLiabilities =
-    priorSummary.find((s) => s.group_key === "liability")?.balance_sum_usd ?? null;
+  const priorAssets = (() => {
+    const raw = priorSummary.find((s) => s.group_key === "asset")?.balance_sum_usd;
+    return raw !== undefined ? Number(raw) : null;
+  })();
+  const priorLiabilities = (() => {
+    const raw = priorSummary.find((s) => s.group_key === "liability")?.balance_sum_usd;
+    return raw !== undefined ? Number(raw) : null;
+  })();
   const priorNetWorth =
     priorAssets !== null && priorLiabilities !== null
       ? priorAssets - priorLiabilities
@@ -391,7 +400,7 @@ export default function DashboardPage() {
                     )}
                   </TableCell>
                   <TableCell className="text-right">
-                    {formatUsd(row.balance_sum_usd)}
+                    {formatUsd(Number(row.balance_sum_usd))}
                   </TableCell>
                 </TableRow>
               ))}
