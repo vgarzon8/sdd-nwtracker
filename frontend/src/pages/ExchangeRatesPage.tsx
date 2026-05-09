@@ -169,7 +169,7 @@ export default function ExchangeRatesPage() {
 
     const existing = rateByCode.get(currencyCode);
 
-    if (existing && rate === existing.rate) {
+    if (existing && rate === Number(existing.rate)) {
       setEditState(null);
       return;
     }
@@ -294,7 +294,7 @@ export default function ExchangeRatesPage() {
                         onClick={() => startEdit(currency.code)}
                         aria-label={`Edit rate for ${currency.code}`}
                       >
-                        {existing ? existing.rate.toFixed(4) : "—"}
+                        {existing ? Number(existing.rate).toFixed(4) : "—"}
                       </button>
                     )}
                   </TableCell>
