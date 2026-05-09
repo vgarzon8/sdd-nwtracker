@@ -19,16 +19,16 @@ The existing placeholder `AccountsPage` becomes fully functional.
 | institution_id | integer | FK → Institution; displayed as institution name in table |
 | currency_code | string | FK → Currency; displayed as currency code in table |
 | side | `asset` \| `liability` | Required |
-| status | `active` \| `inactive` | Default: `active` |
+| status | `active` \| `closed` | Default: `active` |
 | tag_ids | integer[] | FK → Tag[]; multi-select; optional |
 
 The list view includes two **client-side filters** rendered as dropdowns above the table:
-- **Status**: All / Active / Inactive
+- **Status**: All / Active / Closed
 - **Tag**: All / &lt;tag name&gt;
 
 Filters are combined (AND logic) and are local to the page (not persisted to the URL).
 
-**Inactive accounts are visually dimmed** (`opacity-50` on the table row).
+**Closed accounts are visually dimmed** (`opacity-50` on the table row).
 
 ### Not Included
 
