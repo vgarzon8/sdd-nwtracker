@@ -7,6 +7,7 @@ import {
   createBalance,
   updateBalance,
   rollForward,
+  transfer,
   type BalanceDetail,
 } from "@/api/balances";
 import { listAccounts, type Account } from "@/api/accounts";
@@ -29,6 +30,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 function currentCalendarMonth(): string {
   const now = new Date();
@@ -75,6 +84,11 @@ export default function BalancesPage() {
   const [saveErrors, setSaveErrors] = useState<Record<string, string>>({});
   const [rollForwardOpen, setRollForwardOpen] = useState(false);
   const [rollForwardError, setRollForwardError] = useState<string | null>(null);
+  const [transferOpen, setTransferOpen] = useState(false);
+  const [transferFromId, setTransferFromId] = useState<string>("");
+  const [transferToId, setTransferToId] = useState<string>("");
+  const [transferAmount, setTransferAmount] = useState<string>("");
+  const [transferError, setTransferError] = useState<string | null>(null);
 
   const { data: allBalances = [] } = useQuery({
     queryKey: ["balances-months"],
@@ -129,6 +143,27 @@ export default function BalancesPage() {
     },
     onError: (err: Error) => {
       setRollForwardError(err.message || "Roll-forward failed.");
+    },
+  });
+
+  const transferMutation = useMutation({
+    mutationFn: () =>
+      transfer({
+        from_account_id: Number(transferFromId),
+        to_account_id: Number(transferToId),
+        amount: parseInt(transferAmount, 10),
+        month: effectiveMonth,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["balances", effectiveMonth] });
+      setTransferOpen(false);
+      setTransferFromId("");
+      setTransferToId("");
+      setTransferAmount("");
+      setTransferError(null);
+    },
+    onError: (err: Error) => {
+      setTransferError(err.message || "Transfer failed.");
     },
   });
 
@@ -242,6 +277,18 @@ export default function BalancesPage() {
           >
             Roll forward
           </Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setTransferError(null);
+              setTransferFromId("");
+              setTransferToId("");
+              setTransferAmount("");
+              setTransferOpen(true);
+            }}
+          >
+            Transfer
+          </Button>
         </div>
       </div>
 
@@ -284,6 +331,113 @@ export default function BalancesPage() {
               disabled={rollForwardMutation.isPending || !sourceMonth}
             >
               {rollForwardMutation.isPending ? "Rolling forward…" : "Confirm"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={transferOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            setTransferError(null);
+            transferMutation.reset();
+          }
+          setTransferOpen(open);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Transfer</DialogTitle>
+            <DialogDescription>
+              Apply a transfer between two accounts for{" "}
+              {formatMonthLabel(effectiveMonth)}. Both accounts must have a
+              balance entry for this month.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <Label htmlFor="transfer-from">From account</Label>
+              {(() => {
+                const accountsWithBalance = activeAccounts.filter((a) =>
+                  monthBalances.some((b) => b.account_id === a.id),
+                );
+                return accountsWithBalance.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">
+                    No accounts have a balance entry for{" "}
+                    {formatMonthLabel(effectiveMonth)}.
+                  </p>
+                ) : (
+                  <Select value={transferFromId} onValueChange={setTransferFromId}>
+                    <SelectTrigger id="transfer-from">
+                      <SelectValue placeholder="Select account" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {accountsWithBalance.map((a) => (
+                        <SelectItem key={a.id} value={String(a.id)}>
+                          {a.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                );
+              })()}
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="transfer-to">To account</Label>
+              <Select value={transferToId} onValueChange={setTransferToId}>
+                <SelectTrigger id="transfer-to">
+                  <SelectValue placeholder="Select account" />
+                </SelectTrigger>
+                <SelectContent>
+                  {activeAccounts
+                    .filter((a) => String(a.id) !== transferFromId)
+                    .map((a) => (
+                      <SelectItem key={a.id} value={String(a.id)}>
+                        {a.name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="transfer-amount">Amount</Label>
+              <Input
+                id="transfer-amount"
+                type="number"
+                min={1}
+                placeholder="Whole units (e.g. 1000)"
+                value={transferAmount}
+                onChange={(e) => setTransferAmount(e.target.value)}
+              />
+            </div>
+          </div>
+          {transferError && (
+            <p className="text-sm text-destructive">{transferError}</p>
+          )}
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setTransferOpen(false)}
+              disabled={transferMutation.isPending}
+            >
+              Cancel
+            </Button>
+            <Button
+              disabled={
+                transferMutation.isPending ||
+                !transferFromId ||
+                !transferToId ||
+                !transferAmount ||
+                parseInt(transferAmount, 10) <= 0 ||
+                isNaN(parseInt(transferAmount, 10))
+              }
+              onClick={() => {
+                setTransferError(null);
+                transferMutation.mutate();
+              }}
+            >
+              {transferMutation.isPending ? "Transferring…" : "Confirm"}
             </Button>
           </DialogFooter>
         </DialogContent>
