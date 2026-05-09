@@ -2,9 +2,9 @@
 
 ## Automated
 
-- [ ] `just frontend-typecheck` passes with zero errors
-- [ ] `just frontend-lint` passes with zero warnings/errors
-- [ ] `just check` passes (backend tests + lint + typecheck + frontend lint + frontend typecheck)
+- [x] `just frontend-typecheck` passes with zero errors
+- [x] `just frontend-lint` passes with zero warnings/errors
+- [x] `just check` passes (backend tests + lint + typecheck + frontend lint + frontend typecheck)
 
 ---
 
