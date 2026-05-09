@@ -10,14 +10,7 @@ import {
   type BalanceSummaryHistoryItem,
   type BalanceSummaryHistoryResponse,
 } from "@/api/reports";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { listTags } from "@/api/tags";
 import {
   BarChart,
   Bar,
@@ -214,6 +207,16 @@ export default function DashboardPage() {
     queryFn: () => getBalanceSummaryByTags(effectiveMonth),
   });
 
+  const { data: tags = [] } = useQuery({
+    queryKey: ["tags"],
+    queryFn: listTags,
+  });
+
+  const tagNameMap = useMemo(
+    () => new Map(tags.map((t) => [t.id, t.name])),
+    [tags],
+  );
+
   // ── derived values ────────────────────────────────────────────────────────
   const summaryMissing422 = is422(currentError);
   const summaryLoading = currentLoading || priorLoading;
@@ -263,16 +266,22 @@ export default function DashboardPage() {
     [historyResponse],
   );
 
-  const sortedTagRows = useMemo(() => {
+  const tagChartData = useMemo(() => {
     if (!Array.isArray(tagSummary)) return [];
+    const resolve = (key: string | number | null): string => {
+      if (key === null) return "Untagged";
+      if (typeof key === "number") return tagNameMap.get(key) ?? `Tag ${key}`;
+      return key;
+    };
     const named = tagSummary
       .filter((t) => t.group_key !== null)
-      .sort((a, b) =>
-        String(a.group_key ?? "").localeCompare(String(b.group_key ?? "")),
-      );
-    const untagged = tagSummary.filter((t) => t.group_key === null);
+      .map((t) => ({ name: resolve(t.group_key), value: Number(t.balance_sum_usd) }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+    const untagged = tagSummary
+      .filter((t) => t.group_key === null)
+      .map((t) => ({ name: "Untagged", value: Number(t.balance_sum_usd) }));
     return [...named, ...untagged];
-  }, [tagSummary]);
+  }, [tagSummary, tagNameMap]);
 
   const show422Warning = summaryMissing422 || is422(historyError) || is422(tagError);
 
@@ -382,34 +391,45 @@ export default function DashboardPage() {
 
         {tagLoading ? null : is422(tagError) ? null : tagError ? (
           <p className="text-sm text-destructive">Failed to load tag breakdown.</p>
-        ) : tagSummary.length === 0 ? (
+        ) : tagChartData.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            No balance data for{" "}
-            {formatMonthLabel(effectiveMonth)}.
+            No balance data for {formatMonthLabel(effectiveMonth)}.
           </p>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Tag</TableHead>
-                <TableHead className="text-right">Total (USD)</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {sortedTagRows.map((row, i) => (
-                <TableRow key={row.group_key ?? `untagged-${i}`}>
-                  <TableCell>
-                    {row.group_key ?? (
-                      <span className="text-muted-foreground italic">Untagged</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {formatUsd(Number(row.balance_sum_usd))}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <ResponsiveContainer
+            width="100%"
+            height={Math.max(120, tagChartData.length * 44)}
+          >
+            <BarChart
+              layout="vertical"
+              data={tagChartData}
+              margin={{ top: 0, right: 16, bottom: 0, left: 8 }}
+            >
+              <XAxis
+                type="number"
+                tickFormatter={formatYAxis}
+                tick={{ fontSize: 12 }}
+                tickLine={false}
+                axisLine={false}
+              />
+              <YAxis
+                type="category"
+                dataKey="name"
+                width={96}
+                tick={{ fontSize: 12 }}
+                tickLine={false}
+                axisLine={false}
+              />
+              <Tooltip
+                formatter={(value: number) => [formatUsd(value), "Total (USD)"]}
+              />
+              <Bar
+                dataKey="value"
+                fill="hsl(var(--foreground))"
+                radius={[0, 3, 3, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
         )}
       </div>
     </div>
