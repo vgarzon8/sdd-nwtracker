@@ -7,8 +7,14 @@ export interface BalanceSummaryItem {
 
 export interface BalanceSummaryHistoryItem {
   month: string;
-  group_key: string | null;
+  group_key: string | number | null;
   balance_sum_usd: number;
+}
+
+export interface BalanceSummaryHistoryResponse {
+  from_month: string;
+  to_month: string;
+  items: BalanceSummaryHistoryItem[];
 }
 
 export const getBalanceSummaryBySide = (month: string) =>
@@ -22,6 +28,6 @@ export const getBalanceSummaryByTags = (month: string) =>
   );
 
 export const getBalanceSummaryHistory = (from: string, to: string) =>
-  client.get<BalanceSummaryHistoryItem[]>(
+  client.get<BalanceSummaryHistoryResponse>(
     `/reports/balance-summary/history?attribute=side&from=${from}&to=${to}`,
   );

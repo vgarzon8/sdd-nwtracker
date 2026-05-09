@@ -8,6 +8,7 @@ import {
   getBalanceSummaryByTags,
   getBalanceSummaryHistory,
   type BalanceSummaryHistoryItem,
+  type BalanceSummaryHistoryResponse,
 } from "@/api/reports";
 import {
   Table,
@@ -195,10 +196,10 @@ export default function DashboardPage() {
   }, [range, effectiveMonth]);
 
   const {
-    data: historyData = [],
+    data: historyResponse,
     isLoading: historyLoading,
     error: historyError,
-  } = useQuery({
+  } = useQuery<BalanceSummaryHistoryResponse>({
     queryKey: ["reports-history", historyFrom, effectiveMonth],
     queryFn: () => getBalanceSummaryHistory(historyFrom, effectiveMonth),
   });
@@ -257,7 +258,10 @@ export default function DashboardPage() {
       ? currentNetWorth - priorNetWorth
       : null;
 
-  const chartPoints = useMemo(() => toChartPoints(historyData), [historyData]);
+  const chartPoints = useMemo(
+    () => toChartPoints(historyResponse?.items ?? []),
+    [historyResponse],
+  );
 
   const sortedTagRows = useMemo(() => {
     if (!Array.isArray(tagSummary)) return [];
