@@ -1,3 +1,5 @@
+export type CsvFormat = "friendly" | "raw";
+
 export interface TableCounts {
   inserted: number;
   updated: number;
@@ -5,14 +7,18 @@ export interface TableCounts {
 
 export interface ImportResult {
   imported: Record<string, TableCounts>;
+  skipped: Record<string, number>;
+  warnings: string[];
 }
 
 export interface ImportError {
   messages: string[];
 }
 
-export function triggerExport(): void {
-  window.location.href = "/api/export";
+export function triggerExport(format: CsvFormat = "friendly"): void {
+  const url =
+    format === "raw" ? "/api/export?format=raw" : "/api/export";
+  window.location.href = url;
 }
 
 function parseImportError(detail: unknown): string[] {
@@ -30,11 +36,16 @@ function parseImportError(detail: unknown): string[] {
   return ["Import failed. Please check the file and try again."];
 }
 
-export async function importCsv(file: File): Promise<ImportResult> {
+export async function importCsv(
+  file: File,
+  format: CsvFormat = "friendly",
+): Promise<ImportResult> {
   const body = new FormData();
   body.append("file", file);
 
-  const res = await fetch("/api/import", { method: "POST", body });
+  const url =
+    format === "raw" ? "/api/import?format=raw" : "/api/import";
+  const res = await fetch(url, { method: "POST", body });
 
   if (!res.ok) {
     let messages: string[];
