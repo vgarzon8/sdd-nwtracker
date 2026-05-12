@@ -39,6 +39,8 @@ class TableCounts(BaseModel):
 
 class ImportResult(BaseModel):
     imported: dict[str, TableCounts]
+    skipped: dict[str, int] = {}
+    warnings: list[str] = []
 
 
 def import_from_zip(zip_bytes: bytes, session: Session) -> ImportResult:
