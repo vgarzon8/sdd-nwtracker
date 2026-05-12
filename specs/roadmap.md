@@ -201,6 +201,18 @@ Each phase is a small, self-contained unit of work with a clear deliverable. Pha
 
 ---
 
+## Phase 16b — Raw Export / Import [X]
+
+**Deliverable:** Schema-aligned CSV export and import as an alternative to the user-friendly format, accessible from the existing Import/Export page.
+
+- **Export:** add a format toggle (User-friendly / Raw) to the export UI; raw format produces one CSV per table with all columns including `id` and foreign key IDs
+- **Import:** same toggle on the import side; raw import identifies rows by `id` and performs upsert (insert or update), preserving existing data not referenced in the file
+- Raw format is the canonical backup format — a round-trip export → import is lossless
+- Backend adds new endpoints (or a `?format=raw` param) alongside the existing `/export` and `/import` routes
+- Integration tests covering round-trip fidelity and upsert idempotency
+
+---
+
 ## Phase 17 — AI Foundation [ ]
 
 **Deliverable:** Configurable AI provider wired into the backend; tool framework in place; no UI yet.
