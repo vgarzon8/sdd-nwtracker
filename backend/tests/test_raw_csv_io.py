@@ -92,7 +92,9 @@ def _seed_and_export_raw(client: TestClient, session: Session) -> bytes:
     session.add(AccountTag(account_id=acct_icbc.id, tag_id=tag_sav.id))
     session.add(Balance(account_id=acct_chase.id, month="2024-01", amount=15000))  # type: ignore[arg-type]
     session.add(Balance(account_id=acct_icbc.id, month="2024-01", amount=50000))  # type: ignore[arg-type]
-    session.add(ExchangeRate(currency_code="CNY", month="2024-01", rate=Decimal("7.1000")))
+    session.add(
+        ExchangeRate(currency_code="CNY", month="2024-01", rate=Decimal("7.1000"))
+    )
     session.flush()
 
     resp = client.get("/export?format=raw")
@@ -241,12 +243,8 @@ def test_raw_round_trip(client: TestClient, session: Session) -> None:
     zip_bytes = _seed_and_export_raw(client, session)
 
     # Capture reference state
-    orig_bals = {
-        b.amount for b in session.exec(select(Balance)).all()
-    }
-    orig_rates = {
-        str(r.rate) for r in session.exec(select(ExchangeRate)).all()
-    }
+    orig_bals = {b.amount for b in session.exec(select(Balance)).all()}
+    orig_rates = {str(r.rate) for r in session.exec(select(ExchangeRate)).all()}
 
     _wipe_all(session)
     assert len(session.exec(select(Balance)).all()) == 0
